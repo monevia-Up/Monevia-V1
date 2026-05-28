@@ -6,7 +6,6 @@
   <title>Monevia - Personal Finance</title>
   
   <style>
-    /* 1. ATURAN DASAR GLOBAL */
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -16,35 +15,32 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #020617; /* Warna latar belakang luar jika di laptop */
+      background-color: #020617; /* Warna luar desktop */
       color: #ffffff;
-      min-height: 100vh;
+      height: 100vh;
+      width: 100vw;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      overflow: hidden; /* Mengunci scroll browser utama agar tidak memanjang */
     }
     
-    /* 2. STYLE UTAMA (MOBILE-FIRST: DEFAULT UNTUK HP) */
+    /* STYLE UTAMA (KUNCI UKURAN SAMA DENGAN LAYAR HP / SCREEN REAL-ESTATE) */
     .app-container {
-      width: 100vw;
+      width: 100%;
       height: 100vh;
       height: -webkit-fill-available;
-      background-color: #090d16; /* Warna utama aplikasi */
+      background-color: #090d16;
       display: flex;
       flex-direction: column;
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* Memaksa elemen di dalam yang melakukan scroll, bukan aplikasinya */
     }
 
-    /* 3. ATURAN KHUSUS JIKA DIBUKA DI LAPTOP / LAYAR LEBAR (MINIMAL LEBAR 601PX) */
+    /* ATURAN UNTUK LAPTOP / SCREEN LEBAR */
     @media screen and (min-width: 601px) {
-      body {
-        background-color: #020617;
-      }
       .app-container {
-        width: 100%;
-        max-width: 412px; /* Dikunci seukuran HP premium di laptop */
+        max-width: 412px;
         height: 92vh;
         border-radius: 24px;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -52,7 +48,6 @@
       }
     }
 
-    /* 4. STRUKTUR KONTEN DI DALAM APLIKASI */
     .header {
       padding: 20px;
       display: flex;
@@ -60,15 +55,16 @@
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,0.05);
       background-color: #090d16;
-      flex-shrink: 0;
+      flex-shrink: 0; /* Mencegah header gepeng saat data nambah */
     }
     
+    /* JALUR KHUSUS SCROLL: Konten ini yang akan bergulir jika transaksi menumpuk */
     .main-content {
       flex: 1;
-      overflow-y: auto;
+      overflow-y: auto; /* Mengaktifkan scroll internal secara vertikal */
       padding: 20px;
-      padding-bottom: 110px; /* Jarak aman agar tidak tertutup nav bawah */
-      -webkit-overflow-scrolling: touch;
+      padding-bottom: 140px; /* Jarak aman terbawah agar tidak tertutup menu */
+      -webkit-overflow-scrolling: touch; /* Scroll smooth di iOS */
     }
     
     .balance-card {
@@ -77,6 +73,7 @@
       border-radius: 24px;
       padding: 24px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      flex-shrink: 0;
     }
     
     .btn-add {
@@ -90,16 +87,17 @@
       border: none;
       cursor: pointer;
       box-shadow: 0 0 20px rgba(52,211,153,0.4);
-      position: absolute;
-      bottom: 84px;
+      position: absolute; /* Dikembalikan ke absolute agar patuh pada pembungkus HP */
+      bottom: 90px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 99;
     }
     
     .bottom-nav {
-      position: absolute;
+      position: absolute; /* Menempel permanen di bawah container aplikasi */
       bottom: 0;
+      left: 0;
       width: 100%;
       height: 74px;
       padding-bottom: env(safe-area-inset-bottom, 10px);
@@ -255,6 +253,7 @@
 <body>
 
   <div class="app-container">
+    <!-- Header -->
     <div class="header">
       <div>
         <span style="font-size: 12px; color: #64748b;">Monevia App</span>
@@ -265,7 +264,9 @@
       </div>
     </div>
 
+    <!-- MAIN HOME PAGE -->
     <div class="main-content" id="page-home">
+      <!-- Balance Card -->
       <div class="balance-card">
         <span style="font-size: 13px; color: #94a3b8;">Total Saldo Aktif</span>
         <h2 style="font-size: 32px; margin: 6px 0 20px 0; font-weight: bold;" id="display-balance">Rp 0</h2>
@@ -281,11 +282,13 @@
         </div>
       </div>
 
+      <!-- X-Y Custom Chart -->
       <div style="margin-top: 20px; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
         <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8;">Statistik Arus Kas (Sen - Min)</h4>
         <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 2px solid #1e293b; padding-bottom: 4px;" id="chart-container"></div>
       </div>
 
+      <!-- List Transaksi -->
       <div style="margin-top: 24px;">
         <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Riwayat Transaksi</h3>
         <div id="tx-list-container">
@@ -294,6 +297,7 @@
       </div>
     </div>
 
+    <!-- TARGET PAGE -->
     <div class="main-content" id="page-target" style="display: none;">
       <h2 style="font-size: 20px; margin: 0 0 4px 0;">Target Tabungan</h2>
       <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Pantau impian finansial Anda</p>
@@ -312,6 +316,7 @@
       </div>
     </div>
 
+    <!-- AI INSIGHTS PAGE -->
     <div class="main-content" id="page-ai" style="display: none;">
       <h2 style="font-size: 20px; margin: 0 0 4px 0;">Monevia AI</h2>
       <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
@@ -323,10 +328,11 @@
 
       <div class="section-card">
         <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
-        <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% untuk kebutuhan pokok, 30% keinginan, and 20% langsung tabung di awal bulan!</p>
+        <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% untuk kebutuhan pokok, 30% keinginan, dan 20% langsung tabung di awal bulan!</p>
       </div>
     </div>
 
+    <!-- EDUKASI & BERITA PAGE -->
     <div class="main-content" id="page-edu" style="display: none;">
       <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
       <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Update pasar saham & kripto terhangat</p>
@@ -344,10 +350,12 @@
       </a>
     </div>
 
+    <!-- Button Tambah -->
     <button class="btn-add" onclick="openModal()">
       <span style="color: #020617; font-size: 28px; font-weight: bold; display: block; line-height: 0; margin-top: -2px;">+</span>
     </button>
 
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
       <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span>🏠</span><span>Beranda</span></button>
       <button class="nav-item" id="nav-target" onclick="switchTab('target')"><span>🎯</span><span>Target</span></button>
@@ -356,6 +364,7 @@
       <button class="nav-item" id="nav-edu" onclick="switchTab('edu')"><span>📰</span><span>Edukasi</span></button>
     </div>
 
+    <!-- Modal Form -->
     <div class="modal-overlay" id="tx-modal" style="display: none;">
       <div class="modal-box">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -405,6 +414,7 @@
         document.getElementById('page-' + t).style.display = (t === activeTab) ? 'block' : 'none';
         document.getElementById('nav-' + t).classList.toggle('active', t === activeTab);
       });
+      document.getElementById('page-' + activeTab).scrollTop = 0;
     }
 
     function openModal() { document.getElementById('tx-modal').style.display = 'flex'; }
