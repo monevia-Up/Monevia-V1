@@ -140,4 +140,303 @@
       display: flex; justify-content: space-between; align-items: center; background-color: #0f172a;
       padding: 14px; border-radius: 16px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.02);
     }
-    .toggle-box {
+    .toggle-box { display: flex; background-color: #0f172a; padding: 4px; border-radius: 10px; margin-bottom: 16px; }
+    .toggle-btn {
+      flex: 1; background: none; border: none; color: #64748b; padding: 8px;
+      font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer;
+    }
+    .toggle-btn.active-exp { background-color: rgba(244,63,94,0.2); color: #f43f5e; }
+    .toggle-btn.active-inc { background-color: rgba(52,211,153,0.2); color: #34d399; }
+    .section-card {
+      background-color: #0f172a; border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px; padding: 16px; margin-bottom: 16px;
+    }
+    .progress-bar-bg { width: 100%; height: 8px; background-color: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 8px; }
+    .progress-bar-fill { height: 100%; background-color: #34d399; width: 0%; transition: width 0.3s ease; }
+  </style>
+</head>
+<body>
+  
+  <div class="desktop-wrapper">
+    <div class="app-container">
+      
+      <div class="header">
+        <div>
+          <span style="font-size: 12px; color: #64748b;">Monevia App</span>
+          <h1 style="margin: 2px 0 0 0; font-size: 18px; font-weight: bold; color: #34d399;">Calon Miliarder</h1>
+        </div>
+        <div style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(52,211,153,0.1); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(52,211,153,0.2);">
+          <span style="color: #34d399; font-weight: bold; font-size: 14px;">M</span>
+        </div>
+      </div>
+
+      <div class="main-content" id="page-home">
+        <div class="balance-card">
+          <span style="font-size: 13px; color: #94a3b8;">Total Saldo Aktif</span>
+          <h2 style="font-size: 32px; margin: 6px 0 20px 0; font-weight: bold;" id="display-balance">Rp 0</h2>
+          <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+            <div>
+              <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pemasukan</span>
+              <div style="color: #34d399; font-weight: bold; margin-top: 2px;" id="display-income">Rp 0</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pengeluaran</span>
+              <div style="color: #f43f5e; font-weight: bold; margin-top: 2px;" id="display-expense">Rp 0</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8;">Statistik Arus Kas (Sen - Min)</h4>
+          <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 2px solid #1e293b; padding-bottom: 4px;" id="chart-container"></div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Riwayat Transaksi</h3>
+          <div id="tx-list-container">
+            <div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content" id="page-target" style="display: none;">
+        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Target Tabungan</h2>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Pantau impian finansial Anda</p>
+        <div class="section-card">
+          <h3 style="margin: 0; font-size: 16px;">Dana Darurat</h3>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: #94a3b8; margin-top: 10px;">
+            <span id="target-reached">Terkumpul: Rp 0</span>
+            <span>Target: Rp 5.000.000</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="target-progress"></div></div>
+        </div>
+      </div>
+
+      <div class="main-content" id="page-ai" style="display: none;">
+        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Monevia AI</h2>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
+        <div class="section-card" id="ai-status-card" style="border-left: 4px solid #34d399;">
+          <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #94a3b8;">Status Keuangan</h4>
+          <p style="margin: 0; font-size: 15px; font-weight: bold;" id="ai-status-text">Belum ada data.</p>
+        </div>
+        <div class="section-card">
+          <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
+          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20 untuk membagi gaji Anda!</p>
+        </div>
+      </div>
+
+      <div class="main-content" id="page-edu" style="display: none;">
+        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Update pasar saham & kripto terhangat</p>
+        <a href="https://www.cnbcindonesia.com/market" target="_blank" style="text-decoration: none; display: block; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(244,63,94,0.3); margin-bottom: 12px;">
+          <span style="background-color: #f43f5e; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">HOT 🔥</span>
+          <h3 style="color: white; font-size: 15px; margin: 10px 0 6px 0; line-height: 1.4;">IHSG Diprediksi Menguat Tajam</h3>
+        </a>
+      </div>
+
+      <button class="btn-add" onclick="openModal()">
+        <span style="color: #020617; font-size: 28px; font-weight: bold; margin-top: -2px;">+</span>
+      </button>
+
+      <div class="bottom-nav">
+        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span>🏠</span><span>Beranda</span></button>
+        <button class="nav-item" id="nav-target" onclick="switchTab('target')"><span>🎯</span><span>Target</span></button>
+        <div style="width: 44px;"></div>
+        <button class="nav-item" id="nav-ai" onclick="switchTab('ai')"><span>🤖</span><span>AI Insight</span></button>
+        <button class="nav-item" id="nav-edu" onclick="switchTab('edu')"><span>📰</span><span>Edukasi</span></button>
+      </div>
+
+      <div class="modal-overlay" id="tx-modal" style="display: none;">
+        <div class="modal-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="margin: 0; font-size: 16px;">Catat Keuangan</h3>
+            <button onclick="closeModal()" style="background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer;">✕</button>
+          </div>
+
+          <div class="toggle-box">
+            <button class="toggle-btn active-exp" id="toggle-exp" onclick="setType('expense')">Pengeluaran</button>
+            <button class="toggle-btn" id="toggle-inc" onclick="setType('income')">Pemasukan</button>
+          </div>
+
+          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Nominal (Rp)</label>
+          <input type="text" inputmode="numeric" id="form-amount" placeholder="0" class="input-field" oninput="formatInputRupiah(this)">
+          
+          <div class="quick-grid">
+            <button class="btn-quick" onclick="addQuick(10000)">+10k</button>
+            <button class="btn-quick" onclick="addQuick(20000)">+20k</button>
+            <button class="btn-quick" onclick="addQuick(50000)">+50k</button>
+            <button class="btn-quick" onclick="addQuick(100000)">+100k</button>
+          </div>
+
+          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Hari</label>
+          <select id="form-day" class="input-field">
+            <option value="Sen">Senin</option><option value="Sel">Selasa</option><option value="Rab">Rabu</option>
+            <option value="Kam">Kamis</option><option value="Jum">Jumat</option><option value="Sab">Sabtu</option>
+            <option value="Min">Minggu</option>
+          </select>
+
+          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Kategori / Catatan</label>
+          <input type="text" id="form-note" placeholder="Keterangan..." class="input-field">
+
+          <button class="btn-submit" onclick="saveTransaction()">Simpan Transaksi</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <script>
+    // FITUR ANTI ERROR GLOBAL: Jika ada sistem JS yang rusak, bersihkan cache agar tidak blank
+    window.onerror = function() {
+      localStorage.removeItem('monevia_tx');
+      console.log("Sistem mendeteksi error dan telah melakukan pembersihan memori otomatis.");
+    };
+
+    let transactions = [];
+    try {
+      let savedData = localStorage.getItem('monevia_tx');
+      if (savedData) { 
+        let parsed = JSON.parse(savedData);
+        if(Array.isArray(parsed)) { transactions = parsed; }
+      }
+    } catch (e) {
+      localStorage.removeItem('monevia_tx');
+    }
+
+    let currentType = 'expense';
+    const tabList = ['home', 'target', 'ai', 'edu'];
+
+    function formatRupiah(num) { 
+      return 'Rp ' + (Number(num) || 0).toLocaleString('id-ID'); 
+    }
+
+    function formatInputRupiah(element) {
+      let value = element.value.replace(/[^0-9]/g, '');
+      element.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
+    }
+
+    function switchTab(activeTab) {
+      tabList.forEach(t => {
+        let page = document.getElementById('page-' + t);
+        let nav = document.getElementById('nav-' + t);
+        if(page && nav) {
+          page.style.display = (t === activeTab) ? 'block' : 'none';
+          nav.classList.toggle('active', t === activeTab);
+        }
+      });
+      let activePage = document.getElementById('page-' + activeTab);
+      if(activePage) activePage.scrollTop = 0;
+    }
+
+    function openModal() { document.getElementById('tx-modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('tx-modal').style.display = 'none'; }
+
+    function setType(type) {
+      currentType = type;
+      document.getElementById('toggle-exp').classList.toggle('active-exp', type === 'expense');
+      document.getElementById('toggle-inc').classList.toggle('active-inc', type === 'income');
+    }
+
+    function addQuick(val) {
+      let input = document.getElementById('form-amount');
+      let currentVal = Number(input.value.replace(/[^0-9]/g, '')) || 0;
+      input.value = (currentVal + val).toLocaleString('id-ID');
+    }
+
+    function saveTransaction() {
+      let inputField = document.getElementById('form-amount');
+      let rawAmount = inputField.value.replace(/[^0-9]/g, '');
+      let amount = Number(rawAmount);
+      let day = document.getElementById('form-day').value;
+      let note = document.getElementById('form-note').value || 'Umum';
+
+      if (!amount || amount <= 0) return alert('Masukkan nominal yang benar!');
+
+      transactions.unshift({ type: currentType, amount: amount, day: day, note: note });
+      localStorage.setItem('monevia_tx', JSON.stringify(transactions));
+      
+      inputField.value = '';
+      document.getElementById('form-note').value = '';
+      closeModal();
+      updateDashboard();
+    }
+
+    function updateDashboard() {
+      let inc = 0, exp = 0;
+      let dayMap = { Sen: 0, Sel: 0, Rab: 0, Kam: 0, Jum: 0, Sab: 0, Min: 0 };
+      let bocorCategory = {};
+
+      transactions.forEach(t => {
+        if (t.type === 'income') {
+          inc += t.amount;
+          dayMap[t.day] += t.amount;
+        } else {
+          exp += t.amount;
+          if(dayMap[t.day] !== undefined) dayMap[t.day] -= t.amount;
+          bocorCategory[t.note] = (bocorCategory[t.note] || 0) + t.amount;
+        }
+      });
+
+      let bal = inc - exp;
+
+      document.getElementById('display-balance').innerText = formatRupiah(bal);
+      document.getElementById('display-income').innerText = formatRupiah(inc);
+      document.getElementById('display-expense').innerText = formatRupiah(exp);
+
+      let listHtml = '';
+      if (transactions.length === 0) {
+        listHtml = '<div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>';
+      } else {
+        transactions.forEach(t => {
+          let sign = t.type === 'income' ? '+' : '-';
+          let color = t.type === 'income' ? '#34d399' : '#f43f5e';
+          listHtml += `<div class="tx-row"><div><strong>${t.note}</strong><div style="font-size:11px;color:#64748b;margin-top:2px;">Hari ${t.day}</div></div><div style="font-weight:bold;color:${color}">${sign}${formatRupiah(t.amount)}</div></div>`;
+        });
+      }
+      document.getElementById('tx-list-container').innerHTML = listHtml;
+
+      let chartHtml = '';
+      let maxVal = Math.max(...Object.values(dayMap).map(Math.abs), 1);
+      Object.keys(dayMap).forEach(d => {
+        let val = dayMap[d];
+        let heightPct = Math.min(Math.abs(val) / maxVal * 80, 80) + 10;
+        let barColor = val >= 0 ? '#34d399' : '#f43f5e';
+        if(val === 0) { heightPct = 10; barColor = '#1e293b'; }
+        chartHtml += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;"><div style="width:100%;max-width:14px;height:${heightPct}%;background-color:${barColor};border-radius:4px;"></div><span style="font-size:10px;color:#64748b;margin-top:4px;">${d}</span></div>`;
+      });
+      document.getElementById('chart-container').innerHTML = chartHtml;
+
+      let targetProgress = Math.min((bal / 5000000) * 100, 100);
+      if (bal < 0) targetProgress = 0;
+      document.getElementById('target-reached').innerText = 'Terkumpul: ' + formatRupiah(bal > 0 ? bal : 0);
+      document.getElementById('target-progress').style.width = targetProgress + '%';
+
+      let aiCard = document.getElementById('ai-status-card');
+      let aiText = document.getElementById('ai-status-text');
+      let aiTips = document.getElementById('ai-tips');
+
+      if (transactions.length === 0) {
+        aiCard.style.borderLeftColor = '#34d399';
+        aiText.innerText = 'Belum ada data transaksi.';
+      } else if (bal < 0) {
+        aiCard.style.borderLeftColor = '#f43f5e';
+        aiText.innerText = '⚠️ Defisit Kas!';
+        aiTips.innerText = 'Pengeluaran lebih besar dari pemasukan. Kurangi pengeluaran non-primer.';
+      } else {
+        aiCard.style.borderLeftColor = '#34d399';
+        let bocorKeys = Object.keys(bocorCategory);
+        if(bocorKeys.length > 0) {
+          let topBocor = bocorKeys.reduce((a, b) => bocorCategory[a] > bocorCategory[b] ? a : b);
+          aiText.innerText = `✅ Kas Sehat: ${formatRupiah(bal)}`;
+          aiTips.innerText = `Pengeluaran terbesar Anda ada di "${topBocor}". Pertahankan kas positif ini!`;
+        } else {
+          aiText.innerText = `✅ Kas Sehat: ${formatRupiah(bal)}`;
+          aiTips.innerText = `Pemasukan Anda lancar, ayo alokasikan ke Target Tabungan!`;
+        }
+      }
+    }
+
+    updateDashboard();
+  </script>
+</body>
+</html>
