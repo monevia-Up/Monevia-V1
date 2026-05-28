@@ -15,21 +15,19 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #020617; /* Latar belakang luar desktop */
+      background-color: #020617; 
       color: #ffffff;
-      /* Menggunakan dvh agar tinggi layar laptop/HP selalu akurat 100% */
       height: 100dvh;
       width: 100vw;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      overflow: hidden; 
     }
     
-    /* BINGKAI UTAMA APLIKASI */
     .app-container {
       width: 100%;
-      height: 100dvh; /* Mengikuti tinggi dinamis layar fisik HP */
+      height: 100dvh; 
       background-color: #090d16;
       display: flex;
       flex-direction: column;
@@ -37,7 +35,6 @@
       overflow: hidden;
     }
 
-    /* ATURAN UNTUK LAPTOP / SCREEN LEBAR */
     @media screen and (min-width: 601px) {
       .app-container {
         max-width: 412px;
@@ -55,13 +52,12 @@
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,0.05);
       background-color: #090d16;
-      flex-shrink: 0; /* Header dikunci agar ukurannya tidak mengecil */
+      flex-shrink: 0; 
     }
     
-    /* ZONE KHUSUS SCROLL KONTEN */
     .main-content {
       flex: 1;
-      overflow-y: auto; /* Hanya area ini yang boleh scroll */
+      overflow-y: auto; 
       padding: 20px;
       -webkit-overflow-scrolling: touch;
     }
@@ -74,7 +70,6 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
     
-    /* TOMBOL TAMBAH MELAYANG TEPAT DI ATAS NAVBAR */
     .btn-add {
       width: 54px;
       height: 54px;
@@ -87,13 +82,12 @@
       cursor: pointer;
       box-shadow: 0 0 20px rgba(52,211,153,0.4);
       position: absolute;
-      bottom: 45px; /* Disesuaikan agar menggantung pas di tengah navbar bawah */
+      bottom: 45px; 
       left: 50%;
       transform: translateX(-50%);
       z-index: 100;
     }
     
-    /* NAVBAR BAWAH (DIKUNCI MATI MENEMPEL DI BAWAH APPS CONTAINER) */
     .bottom-nav {
       width: 100%;
       height: 70px;
@@ -105,7 +99,7 @@
       align-items: center;
       box-sizing: border-box;
       z-index: 99;
-      flex-shrink: 0; /* Navbar dikunci agar tidak terdorong hilang */
+      flex-shrink: 0; 
     }
     
     .nav-item {
@@ -123,7 +117,6 @@
     
     .nav-item.active { color: #34d399; }
     
-    /* MODAL FORM */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -187,3 +180,141 @@
       border-radius: 8px;
       font-size: 12px;
       cursor: pointer;
+    }
+    .tx-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0f172a;
+      padding: 14px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    .toggle-box {
+      display: flex;
+      background-color: #0f172a;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .toggle-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #64748b;
+      padding: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .toggle-btn.active-exp { background-color: rgba(244,63,94,0.2); color: #f43f5e; }
+    .toggle-btn.active-inc { background-color: rgba(52,211,153,0.2); color: #34d399; }
+    .section-card {
+      background-color: #0f172a;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background-color: #1e293b;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #34d399;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="header">
+      <div>
+        <span style="font-size: 12px; color: #64748b;">Monevia App</span>
+        <h1 style="margin: 2px 0 0 0; font-size: 18px; font-weight: bold; color: #34d399;">Calon Miliarder</h1>
+      </div>
+      <div style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(52,211,153,0.1); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(52,211,153,0.2);">
+        <span style="color: #34d399; font-weight: bold; font-size: 14px;">M</span>
+      </div>
+    </div>
+
+    <div class="main-content" id="page-home">
+      <div class="balance-card">
+        <span style="font-size: 13px; color: #94a3b8;">Total Saldo Aktif</span>
+        <h2 style="font-size: 32px; margin: 6px 0 20px 0; font-weight: bold;" id="display-balance">Rp 0</h2>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+          <div>
+            <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pemasukan</span>
+            <div style="color: #34d399; font-weight: bold; margin-top: 2px;" id="display-income">Rp 0</div>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pengeluaran</span>
+            <div style="color: #f43f5e; font-weight: bold; margin-top: 2px;" id="display-expense">Rp 0</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+        <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8;">Statistik Arus Kas (Sen - Min)</h4>
+        <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 2px solid #1e293b; padding-bottom: 4px;" id="chart-container"></div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Riwayat Transaksi</h3>
+        <div id="tx-list-container">
+          <div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content" id="page-target" style="display: none;">
+      <h2 style="font-size: 20px; margin: 0 0 4px 0;">Target Tabungan</h2>
+      <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Pantau impian finansial Anda</p>
+      
+      <div class="section-card">
+        <h3 style="margin: 0; font-size: 16px;" id="target-title">Dana Darurat</h3>
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: #94a3b8; margin-top: 10px;">
+          <span id="target-reached">Terkumpul: Rp 0</span>
+          <span id="target-total">Target: Rp 5.000.000</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="target-progress"></div></div>
+      </div>
+      
+      <div class="section-card" style="border-style: dashed; background: transparent; text-align: center; cursor: pointer;" onclick="alert('Fitur kustom target akan segera hadir di versi Pro!')">
+        <span style="color: #64748b; font-size: 14px;">+ Buat Target Kustom Baru</span>
+      </div>
+    </div>
+
+    <div class="main-content" id="page-ai" style="display: none;">
+      <h2 style="font-size: 20px; margin: 0 0 4px 0;">Monevia AI</h2>
+      <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
+      
+      <div class="section-card" id="ai-status-card" style="border-left: 4px solid #34d399;">
+        <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #94a3b8;">Status Keuangan</h4>
+        <p style="margin: 0; font-size: 15px; font-weight: bold;" id="ai-status-text">Belum ada data transaksi yang cukup untuk dianalisis.</p>
+      </div>
+
+      <div class="section-card">
+        <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
+        <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% untuk kebutuhan pokok, 30% keinginan, dan 20% langsung tabung di awal bulan!</p>
+      </div>
+    </div>
+
+    <div class="main-content" id="page-edu" style="display: none;">
+      <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
+      <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Update pasar saham & kripto terhangat</p>
+      
+      <a href="https://www.cnbcindonesia.com/market" target="_blank" style="text-decoration: none; display: block; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(244,63,94,0.3); margin-bottom: 12px;">
+        <span style="background-color: #f43f5e; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">HOT 🔥</span>
+        <h3 style="color: white; font-size: 15px; margin: 10px 0 6px 0; line-height: 1.4;">IHSG Diprediksi Menguat Tajam Menjelang Rilis Data Ekonomi Kuartal Kedua</h3>
+        <span style="color: #34d399; font-size: 12px;">Buka Sumber CNBC &rarr;</span>
+      </a>
