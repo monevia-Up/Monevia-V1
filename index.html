@@ -2,15 +2,21 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Monevia - Personal Finance</title>
   
   <style>
+    /* 1. ATURAN DASAR GLOBAL */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #020617; /* Warna luar laptop */
+      background-color: #020617; /* Warna latar belakang luar jika di laptop */
       color: #ffffff;
       min-height: 100vh;
       display: flex;
@@ -19,38 +25,34 @@
       overflow: hidden;
     }
     
+    /* 2. STYLE UTAMA (MOBILE-FIRST: DEFAULT UNTUK HP) */
     .app-container {
-      width: 100%;
-      max-width: 412px; /* Standar tampilan laptop */
+      width: 100vw;
       height: 100vh;
-      background-color: #090d16;
+      height: -webkit-fill-available;
+      background-color: #090d16; /* Warna utama aplikasi */
       display: flex;
       flex-direction: column;
       position: relative;
-      box-sizing: border-box;
-      border-left: 1px solid rgba(255,255,255,0.05);
-      border-right: 1px solid rgba(255,255,255,0.05);
-      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      overflow: hidden;
     }
 
-    /* PAKSA FULL SCREEN JIKA SENSOR LAYAR DI BAWAH 600PX (HP) */
-    @media screen and (max-width: 600px) {
+    /* 3. ATURAN KHUSUS JIKA DIBUKA DI LAPTOP / LAYAR LEBAR (MINIMAL LEBAR 601PX) */
+    @media screen and (min-width: 601px) {
       body {
-        background-color: #090d16 !important;
-        position: fixed;
-        width: 100%;
+        background-color: #020617;
       }
       .app-container {
-        max-width: 100% !important;
-        width: 100% !important;
-        border-left: none !important;
-        border-right: none !important;
-        box-shadow: none !important;
-        height: 100vh !important;
-        height: -webkit-fill-available !important;
+        width: 100%;
+        max-width: 412px; /* Dikunci seukuran HP premium di laptop */
+        height: 92vh;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
       }
     }
 
+    /* 4. STRUKTUR KONTEN DI DALAM APLIKASI */
     .header {
       padding: 20px;
       display: flex;
@@ -58,14 +60,17 @@
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,0.05);
       background-color: #090d16;
+      flex-shrink: 0;
     }
+    
     .main-content {
       flex: 1;
       overflow-y: auto;
       padding: 20px;
-      padding-bottom: 120px; 
+      padding-bottom: 110px; /* Jarak aman agar tidak tertutup nav bawah */
       -webkit-overflow-scrolling: touch;
     }
+    
     .balance-card {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid rgba(255,255,255,0.1);
@@ -73,6 +78,7 @@
       padding: 24px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
+    
     .btn-add {
       width: 56px;
       height: 56px;
@@ -90,12 +96,13 @@
       transform: translateX(-50%);
       z-index: 99;
     }
+    
     .bottom-nav {
       position: absolute;
       bottom: 0;
       width: 100%;
       height: 74px;
-      padding-bottom: 10px;
+      padding-bottom: env(safe-area-inset-bottom, 10px);
       background-color: #020617;
       border-top: 1px solid rgba(255,255,255,0.1);
       display: flex;
@@ -103,7 +110,9 @@
       align-items: center;
       box-sizing: border-box;
       z-index: 98;
+      flex-shrink: 0;
     }
+    
     .nav-item {
       background: none;
       border: none;
@@ -115,31 +124,40 @@
       align-items: center;
       gap: 4px;
     }
+    
     .nav-item.active { color: #34d399; }
     
+    /* MODAL FORM */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background-color: rgba(0,0,0,0.85);
       z-index: 999;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding: 20px;
     }
+    
     .modal-box {
       width: 100%;
-      max-width: 370px;
       background-color: #090d16;
-      border-radius: 24px;
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
       padding: 24px;
       box-sizing: border-box;
-      border: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    @media screen and (max-width: 600px) {
-      .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
-      .modal-box { max-width: 100% !important; border-radius: 0 !important; border-top-left-radius: 28px !important; border-top-right-radius: 28px !important; }
+    @media screen and (min-width: 601px) {
+      .modal-overlay {
+        align-items: center;
+        padding: 20px;
+      }
+      .modal-box {
+        max-width: 370px;
+        border-radius: 24px;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
     }
 
     .input-field {
@@ -236,8 +254,7 @@
 </head>
 <body>
 
-  <div class="app-container" id="appContainer">
-    <!-- Header -->
+  <div class="app-container">
     <div class="header">
       <div>
         <span style="font-size: 12px; color: #64748b;">Monevia App</span>
@@ -248,9 +265,7 @@
       </div>
     </div>
 
-    <!-- MAIN HOME PAGE -->
     <div class="main-content" id="page-home">
-      <!-- Balance Card -->
       <div class="balance-card">
         <span style="font-size: 13px; color: #94a3b8;">Total Saldo Aktif</span>
         <h2 style="font-size: 32px; margin: 6px 0 20px 0; font-weight: bold;" id="display-balance">Rp 0</h2>
@@ -266,13 +281,11 @@
         </div>
       </div>
 
-      <!-- X-Y Custom Chart -->
       <div style="margin-top: 20px; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
         <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8;">Statistik Arus Kas (Sen - Min)</h4>
         <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 2px solid #1e293b; padding-bottom: 4px;" id="chart-container"></div>
       </div>
 
-      <!-- List Transaksi -->
       <div style="margin-top: 24px;">
         <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Riwayat Transaksi</h3>
         <div id="tx-list-container">
@@ -281,7 +294,6 @@
       </div>
     </div>
 
-    <!-- TARGET PAGE -->
     <div class="main-content" id="page-target" style="display: none;">
       <h2 style="font-size: 20px; margin: 0 0 4px 0;">Target Tabungan</h2>
       <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Pantau impian finansial Anda</p>
@@ -300,7 +312,6 @@
       </div>
     </div>
 
-    <!-- AI INSIGHTS PAGE -->
     <div class="main-content" id="page-ai" style="display: none;">
       <h2 style="font-size: 20px; margin: 0 0 4px 0;">Monevia AI</h2>
       <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
@@ -312,11 +323,10 @@
 
       <div class="section-card">
         <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
-        <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% untuk kebutuhan pokok, 30% keinginan, dan 20% langsung tabung di awal bulan!</p>
+        <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% untuk kebutuhan pokok, 30% keinginan, and 20% langsung tabung di awal bulan!</p>
       </div>
     </div>
 
-    <!-- EDUKASI & BERITA PAGE -->
     <div class="main-content" id="page-edu" style="display: none;">
       <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
       <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Update pasar saham & kripto terhangat</p>
@@ -334,12 +344,10 @@
       </a>
     </div>
 
-    <!-- Button Tambah -->
     <button class="btn-add" onclick="openModal()">
       <span style="color: #020617; font-size: 28px; font-weight: bold; display: block; line-height: 0; margin-top: -2px;">+</span>
     </button>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
       <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span>🏠</span><span>Beranda</span></button>
       <button class="nav-item" id="nav-target" onclick="switchTab('target')"><span>🎯</span><span>Target</span></button>
@@ -348,7 +356,6 @@
       <button class="nav-item" id="nav-edu" onclick="switchTab('edu')"><span>📰</span><span>Edukasi</span></button>
     </div>
 
-    <!-- Modal Form -->
     <div class="modal-overlay" id="tx-modal" style="display: none;">
       <div class="modal-box">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -387,18 +394,6 @@
   </div>
 
   <script>
-    // FORCE HARDWARE ACCELERATION DETECTION UNTUK HP
-    function adjustResponsiveLayout() {
-      const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-      const container = document.getElementById('appContainer');
-      if (width <= 600) {
-        container.style.maxWidth = '100%';
-        container.style.width = '100%';
-      }
-    }
-    window.addEventListener('resize', adjustResponsiveLayout);
-    window.addEventListener('load', adjustResponsiveLayout);
-
     let transactions = JSON.parse(localStorage.getItem('monevia_tx')) || [];
     let currentType = 'expense';
     const tabList = ['home', 'target', 'ai', 'edu'];
