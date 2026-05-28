@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monevia - Cerdas Kelola Keuangan</title>
+  <title>Monevia - Cerdas Kelola Keuangan dengan AI</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -47,6 +47,26 @@
       animation: shimmer 1.5s infinite;
       content: '';
     }
+
+    /* Pulse effect for AI indicator */
+    .pulse-glow {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-white font-sans antialiased selection:bg-emerald-500 selection:text-slate-950">
@@ -56,22 +76,24 @@
 
   <!-- Script Aplikasi Berbasis React (JSX) -->
   <script type="text/babel">
-    
     const Icons = {
       Home: () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       ),
       Target: () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
       ),
       Plus: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       ),
       Newspaper: () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
       ),
       BrainCircuit: () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v3"/><path d="M12 19v3"/><path d="M22 12h-3"/><path d="M5 12H2"/><path d="m17 5-2 2"/><path d="m9 15-2 2"/><path d="m19 17-2-2"/><path d="m7 7-2-2"/><circle cx="12" cy="12" r="4"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v3"/><path d="M12 19v3"/><path d="M22 12h-3"/><path d="M5 12H2"/><path d="m17 5-2 2"/><path d="m9 15-2 2"/><path d="m19 17-2-2"/><path d="m7 7-2-2"/><circle cx="12" cy="12" r="4"/></svg>
+      ),
+      Sparkles: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5 5 3Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"/></svg>
       ),
       X: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -90,6 +112,9 @@
       ),
       Refresh: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+      ),
+      CheckCircle: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       )
     };
 
@@ -99,12 +124,12 @@
       // Load Initial States safely from LocalStorage to keep user's customized input saved
       const [transactions, setTransactions] = React.useState(() => {
         const local = localStorage.getItem('monevia_txs');
-        return local ? JSON.parse(local) : []; // Reset ke 0 trx
+        return local ? JSON.parse(local) : []; // Dimulai dari 0 transaksi sesuai permintaan riset
       });
       
       const [monthlySavingsTarget, setMonthlySavingsTarget] = React.useState(() => {
         const local = localStorage.getItem('monevia_monthly_target');
-        return local ? parseInt(local, 10) : 0; // Reset ke 0 target bulanan
+        return local ? parseInt(local, 10) : 0; // Dimulai dari 0 sesuai riset
       });
       
       const [tempTarget, setTempTarget] = React.useState('0');
@@ -112,7 +137,7 @@
       
       const [goals, setGoals] = React.useState(() => {
         const local = localStorage.getItem('monevia_goals');
-        return local ? JSON.parse(local) : []; // Reset ke 0 target impian
+        return local ? JSON.parse(local) : []; // Dimulai dari 0 sesuai riset
       });
 
       // Custom dialog system states (Replacing window.alert and window.confirm)
@@ -124,6 +149,15 @@
       const [newsLoading, setNewsLoading] = React.useState(false);
       const [newsError, setNewsError] = React.useState(null);
       
+      // AI Financial Advisor states
+      const [aiResult, setAiResult] = React.useState(() => {
+        const local = localStorage.getItem('monevia_ai_analysis');
+        return local ? JSON.parse(local) : null;
+      });
+      const [aiLoading, setAiLoading] = React.useState(false);
+      const [aiLoadingText, setAiLoadingText] = React.useState('');
+      const [aiError, setAiError] = React.useState(null);
+
       const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
       const [isAddGoalModalOpen, setIsAddGoalModalOpen] = React.useState(false);
       const [isAddFundsModalOpen, setIsAddFundsModalOpen] = React.useState(false);
@@ -141,6 +175,14 @@
       React.useEffect(() => {
         localStorage.setItem('monevia_goals', JSON.stringify(goals));
       }, [goals]);
+
+      React.useEffect(() => {
+        if (aiResult) {
+          localStorage.setItem('monevia_ai_analysis', JSON.stringify(aiResult));
+        } else {
+          localStorage.removeItem('monevia_ai_analysis');
+        }
+      }, [aiResult]);
 
       // Trigger automatic news fetch when educational tab is opened
       React.useEffect(() => {
@@ -213,7 +255,6 @@
         } catch (error) {
           console.warn("API limit or issue. Triggering fallback offline news.", error);
           setNewsError("Koneksi eksternal sibuk. Menampilkan rilis berita Monevia Newsroom.");
-          // Safe local high-quality mock news if API fails
           setNewsList([
             {
               title: "IHSG Ditutup Menguat Tipis di Tengah Sentimen Pasar Global",
@@ -239,6 +280,109 @@
           ]);
         } finally {
           setNewsLoading(false);
+        }
+      };
+
+      const handleAnalyzeAI = async () => {
+        if (transactions.length === 0) {
+          setAlertBox({ message: 'Anda harus mencatat minimal satu transaksi terlebih dahulu agar AI dapat mempelajari kondisi finansial Anda.' });
+          return;
+        }
+
+        setAiLoading(true);
+        setAiError(null);
+        
+        // Dynamic loading text logic to keep the user engaged
+        const loadingPhrases = [
+          "Membaca seluruh riwayat transaksi Anda...",
+          "Menganalisis rasio pemasukan dan pengeluaran...",
+          "Menghitung skor kesehatan keuangan (1-100)...",
+          "Mencocokkan kemajuan tabungan terhadap target bulanan Anda...",
+          "Merumuskan strategi penghematan yang dipersonalisasi...",
+          "Menyusun rekomendasi finansial cerdas..."
+        ];
+        
+        let textIdx = 0;
+        setAiLoadingText(loadingPhrases[0]);
+        const phraseInterval = setInterval(() => {
+          textIdx = (textIdx + 1) % loadingPhrases.length;
+          setAiLoadingText(loadingPhrases[textIdx]);
+        }, 1800);
+
+        try {
+          const systemPrompt = `Anda adalah Monevia AI Advisor, asisten keuangan pribadi digital cerdas kelas dunia untuk masyarakat Indonesia.
+          Tugas Anda adalah menganalisis data keuangan pengguna dan memberikan skor kesehatan keuangan (1-100), ulasan kondisi saat ini, analisis mendalam, saran spesifik untuk target tabungan mereka, dan 3 rekomendasi langkah konkret untuk menghemat uang atau mengoptimalkan keuangan.
+
+          Format keluaran HARUS berupa JSON murni dengan skema berikut secara presisi:
+          {
+            "healthScore": number,
+            "summary": "string ringkasan kondisi keuangan (1-2 kalimat)",
+            "analysis": "string analisis mendalam mengenai rasio pengeluaran, pola, atau kondisi saat ini",
+            "recommendations": ["string rekomendasi konkret 1", "string rekomendasi konkret 2", "string rekomendasi konkret 3"],
+            "goalsAdvice": "string saran strategis spesifik terkait dengan goals/target impian yang terdaftar, atau motivasi menabung secara umum jika belum ada goals"
+          }
+
+          Berikan tanggapan hanya berupa JSON murni tanpa pembungkus markdown seperti \`\`\`json atau karakter pembuka/penutup lainnya. Tanggapan Anda akan langsung di-parse dengan JSON.parse(). Bahasa yang digunakan harus ramah, memotivasi, dan mudah dipahami dalam bahasa Indonesia santai tapi profesional.`;
+
+          const userQuery = `Berikut adalah data keuangan saya saat ini:
+          - Total Saldo Bersih: ${formatIDR(currentBalance)}
+          - Total Pemasukan: ${formatIDR(totalIncome)}
+          - Total Pengeluaran: ${formatIDR(totalExpense)}
+          - Target Tabungan Bulanan Global: ${formatIDR(monthlySavingsTarget)}
+          - Riwayat Transaksi: ${JSON.stringify(transactions.map(t => ({ type: t.type, amount: t.amount, category: t.category, note: t.note })))}
+          - Daftar Target Impian (Goals): ${JSON.stringify(goals.map(g => ({ title: g.title, targetAmount: g.targetAmount, currentAmount: g.currentAmount, category: g.category })))}
+
+          Silakan lakukan analisis keuangan mendalam berdasarkan data di atas.`;
+
+          const apiKey = ""; // Canvas will automatically inject this inside the client environment
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+          const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: {
+              parts: [{ text: systemPrompt }]
+            },
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          };
+
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error("Respon API Bermasalah");
+          }
+
+          const result = await response.json();
+          const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+          
+          if (generatedText) {
+            let cleanJsonText = generatedText.trim();
+            // Fallback safety to clean up unexpected markdown wraps
+            if (cleanJsonText.startsWith("```json")) {
+              cleanJsonText = cleanJsonText.substring(7);
+            } else if (cleanJsonText.startsWith("```")) {
+              cleanJsonText = cleanJsonText.substring(3);
+            }
+            if (cleanJsonText.endsWith("```")) {
+              cleanJsonText = cleanJsonText.substring(0, cleanJsonText.length - 3);
+            }
+            
+            const cleanJson = JSON.parse(cleanJsonText.trim());
+            setAiResult(cleanJson);
+          } else {
+            throw new Error("Gagal memperoleh hasil analisis dari AI.");
+          }
+        } catch (error) {
+          console.error("AI Analysis error:", error);
+          setAiError("Gagal terhubung dengan server Monevia AI. Silakan periksa jaringan Anda.");
+        } finally {
+          clearInterval(phraseInterval);
+          setAiLoading(false);
         }
       };
 
@@ -314,6 +458,7 @@
             setMonthlySavingsTarget(0);
             setTempTarget('0');
             setGoals([]);
+            setAiResult(null);
             localStorage.clear();
             setConfirmBox(null);
             setAlertBox({ message: 'Seluruh data keuangan berhasil di-reset menjadi 0.' });
@@ -324,6 +469,13 @@
       const targetPercent = monthlySavingsTarget > 0 
         ? Math.min(Math.round((currentBalance / monthlySavingsTarget) * 100), 100) 
         : 0;
+
+      // Color scheme selector for the dynamic health score
+      const getScoreColor = (score) => {
+        if (score >= 75) return { text: 'text-emerald-400', border: 'border-emerald-500/30', bg: 'bg-emerald-500/10' };
+        if (score >= 50) return { text: 'text-yellow-400', border: 'border-yellow-500/30', bg: 'bg-yellow-500/10' };
+        return { text: 'text-rose-400', border: 'border-rose-500/30', bg: 'bg-rose-500/10' };
+      };
 
       return (
         <div className="min-h-screen pb-24 md:pb-12 flex flex-col bg-gradient-to-br from-slate-950 to-[#0c1322]">
@@ -428,6 +580,25 @@
                       <p className="text-rose-400 font-bold text-base mt-1">{formatIDR(totalExpense)}</p>
                     </div>
                   </div>
+                </div>
+
+                {/* AI Quick Banner */}
+                <div className="bg-slate-900/30 border border-emerald-500/20 p-4 rounded-2xl flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                      <Icons.Sparkles />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-white">Butuh Solusi Finansial?</h4>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Analisis pola transaksi Anda secara cerdas bersama Monevia AI Advisor.</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setCurrentTab('ai')}
+                    className="px-3.5 py-1.5 bg-emerald-400 text-slate-950 text-[10px] font-extrabold rounded-xl hover:bg-emerald-300 transition-colors"
+                  >
+                    Buka AI
+                  </button>
                 </div>
 
                 {/* Riwayat Transaksi */}
@@ -566,7 +737,117 @@
               </div>
             )}
 
-            {/* TAB 3: EDUKASI */}
+            {/* TAB 3: ASISTEN AI (NEW TAB) */}
+            {currentTab === 'ai' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 flex items-center gap-2">
+                    <Icons.Sparkles />
+                    <span>Monevia AI Advisor</span>
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-1">Konsultan finansial pribadi Anda yang didukung oleh kecerdasan buatan.</p>
+                </div>
+
+                {/* AI Controller Panel */}
+                <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-emerald-500/10 rounded-3xl p-6 text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/15 flex items-center justify-center pulse-glow">
+                    <Icons.BrainCircuit />
+                  </div>
+                  
+                  <h3 className="font-bold text-base">Analisis Anggaran Anda</h3>
+                  <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                    AI akan menganalisis tren pemasukan, pengeluaran, rasio tabungan, dan memberikan saran praktis agar Anda mencapai kebebasan finansial lebih cepat.
+                  </p>
+
+                  <button 
+                    onClick={handleAnalyzeAI}
+                    disabled={aiLoading}
+                    className="bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-extrabold px-6 py-3 rounded-2xl hover:brightness-110 active:scale-95 transition-all text-sm shadow-lg shadow-emerald-400/10 disabled:opacity-50"
+                  >
+                    {aiLoading ? "Menganalisis..." : "Mulai Analisis Keuangan ✨"}
+                  </button>
+                </div>
+
+                {/* AI Loading State */}
+                {aiLoading && (
+                  <div className="p-8 border border-white/5 bg-slate-900/30 rounded-3xl text-center space-y-4">
+                    <div className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="text-xs text-emerald-400 font-medium tracking-wide animate-pulse">{aiLoadingText}</p>
+                  </div>
+                )}
+
+                {/* AI Error State */}
+                {aiError && (
+                  <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs text-rose-300 flex items-center justify-between">
+                    <span>{aiError}</span>
+                    <button onClick={handleAnalyzeAI} className="underline text-rose-400 font-bold ml-2">Coba Lagi</button>
+                  </div>
+                )}
+
+                {/* AI Results Output Container */}
+                {!aiLoading && aiResult && (
+                  <div className="space-y-6">
+                    {/* Health Score Shield */}
+                    <div className={`p-6 border rounded-3xl flex flex-col md:flex-row items-center gap-6 ${getScoreColor(aiResult.healthScore).border} ${getScoreColor(aiResult.healthScore).bg}`}>
+                      <div className="relative w-24 h-24 flex items-center justify-center rounded-full border-4 border-white/5 bg-slate-950">
+                        <div className="text-center">
+                          <span className={`text-3xl font-extrabold ${getScoreColor(aiResult.healthScore).text}`}>
+                            {aiResult.healthScore}
+                          </span>
+                          <p className="text-[8px] text-slate-400 font-bold tracking-widest uppercase mt-0.5">SKOR AI</p>
+                        </div>
+                      </div>
+                      <div className="flex-1 text-center md:text-left space-y-2">
+                        <span className="text-[9px] bg-slate-950/80 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider text-emerald-400">
+                          REKAP KESEHATAN KEUANGAN
+                        </span>
+                        <p className="text-sm font-semibold text-white leading-relaxed mt-1">
+                          "{aiResult.summary}"
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Deep Analysis Card */}
+                    <div className="bg-slate-900/40 border border-white/5 p-6 rounded-3xl space-y-3">
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Analisis Mendalam</h4>
+                      <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
+                        {aiResult.analysis}
+                      </p>
+                    </div>
+
+                    {/* recommendations list */}
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">3 Langkah Taktis Penghematan</h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        {aiResult.recommendations.map((rec, index) => (
+                          <div key={index} className="bg-slate-900/20 border border-white/5 p-4 rounded-2xl flex gap-3.5 items-start">
+                            <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-extrabold">
+                              {index + 1}
+                            </div>
+                            <p className="text-xs text-slate-300 leading-relaxed">{rec}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Saving Goals strategic Advice */}
+                    <div className="bg-gradient-to-br from-slate-900 to-teal-950/20 border border-teal-500/10 p-6 rounded-3xl space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center">
+                          <Icons.Target />
+                        </div>
+                        <h4 className="text-xs font-bold text-teal-400 uppercase tracking-widest">Saran Target Impian</h4>
+                      </div>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        {aiResult.goalsAdvice}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 4: EDUKASI */}
             {currentTab === 'edu' && (
               <div className="space-y-6">
                 <div>
@@ -667,14 +948,14 @@
             )}
           </main>
 
-          {/* Bottom Mobile Navigation */}
-          <nav className="fixed bottom-0 left-0 right-0 h-18 bg-slate-950/90 backdrop-blur-md border-t border-white/5 flex items-center justify-around px-6 z-40 pb-safe">
+          {/* Bottom Navigation */}
+          <nav className="fixed bottom-0 left-0 right-0 h-18 bg-slate-950/90 backdrop-blur-md border-t border-white/5 flex items-center justify-around px-4 z-40 pb-safe">
             <button 
               onClick={() => setCurrentTab('home')} 
               className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'home' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
             >
               <Icons.Home />
-              <span className="text-[10px] font-medium">Dashboard</span>
+              <span className="text-[9px] font-medium mt-0.5">Dashboard</span>
             </button>
             
             <button 
@@ -682,7 +963,15 @@
               className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'target' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
             >
               <Icons.Target />
-              <span className="text-[10px] font-medium">Target</span>
+              <span className="text-[9px] font-medium mt-0.5">Target</span>
+            </button>
+
+            <button 
+              onClick={() => setCurrentTab('ai')} 
+              className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'ai' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Icons.Sparkles />
+              <span className="text-[9px] font-medium mt-0.5">Asisten AI</span>
             </button>
             
             <button 
@@ -690,7 +979,7 @@
               className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'edu' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
             >
               <Icons.Newspaper />
-              <span className="text-[10px] font-medium">Edukasi</span>
+              <span className="text-[9px] font-medium mt-0.5">Edukasi</span>
             </button>
           </nav>
 
