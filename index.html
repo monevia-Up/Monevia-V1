@@ -2,434 +2,744 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Monevia - Personal Finance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monevia - Cerdas Kelola Keuangan</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel Standalone untuk compile JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      width: 100%; height: 100%; background-color: #020617;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #ffffff; overflow: hidden;
+    body {
+      font-family: 'Inter', sans-serif;
     }
-    .desktop-wrapper {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #020617; display: flex; justify-content: center; align-items: center;
-    }
-    .app-container {
-      width: 100%; height: 100%; background-color: #090d16;
-      display: flex; flex-direction: column; position: relative;
-    }
-    @media screen and (min-width: 601px) {
-      .app-container {
-        max-width: 412px; height: 90vh; border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 60px rgba(0,0,0,0.8); overflow: hidden;
-      }
-    }
-    .header {
-      flex: 0 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
-      background-color: #090d16; border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;
-    }
-    .main-content {
-      flex: 1 1 auto; overflow-y: auto; padding: 20px; padding-bottom: 90px; -webkit-overflow-scrolling: touch;
-    }
-    .bottom-nav {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 70px;
-      background-color: #020617; border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 10;
-    }
-    .btn-add {
-      position: absolute; bottom: 42px; left: 50%; transform: translateX(-50%);
-      width: 56px; height: 56px; background-color: #34d399; border-radius: 50%;
-      display: flex; justify-content: center; align-items: center; border: none; cursor: pointer;
-      box-shadow: 0 0 20px rgba(52,211,153,0.4); z-index: 100;
-    }
-    .nav-item {
-      background: none; border: none; color: #64748b; font-size: 11px;
-      cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;
-    }
-    .nav-item.active { color: #34d399; }
-    .balance-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 999;
-      display: flex; align-items: flex-end; justify-content: center;
-    }
-    .modal-box {
-      width: 100%; background-color: #090d16; border-top-left-radius: 28px; border-top-right-radius: 28px;
-      padding: 24px; border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    @media screen and (min-width: 601px) {
-      .modal-overlay { align-items: center; padding: 20px; }
-      .modal-box { max-width: 370px; border-radius: 24px; }
-    }
-    .input-field {
-      width: 100%; background-color: #0f172a; border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px; padding: 14px; color: white; font-size: 16px; margin-bottom: 12px; outline: none;
-    }
-    .btn-submit {
-      width: 100%; background-color: #34d399; color: #020617; font-weight: bold;
-      padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer;
-    }
-    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; margin-bottom: 16px; }
-    .btn-quick {
-      background-color: #0f172a; border: 1px solid rgba(255,255,255,0.05); color: #cbd5e1;
-      padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer;
-    }
-    .tx-row {
-      display: flex; justify-content: space-between; align-items: center; background-color: #0f172a;
-      padding: 14px; border-radius: 16px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.02);
-    }
-    .toggle-box { display: flex; background-color: #0f172a; padding: 4px; border-radius: 10px; margin-bottom: 16px; }
-    .toggle-btn {
-      flex: 1; background: none; border: none; color: #64748b; padding: 8px;
-      font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer;
-    }
-    .toggle-btn.active-exp { background-color: rgba(244,63,94,0.2); color: #f43f5e; }
-    .toggle-btn.active-inc { background-color: rgba(52,211,153,0.2); color: #34d399; }
-    .section-card {
-      background-color: #0f172a; border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 20px; padding: 16px; margin-bottom: 16px;
-    }
-    .progress-bar-bg { width: 100%; height: 8px; background-color: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 8px; }
-    .progress-bar-fill { height: 100%; background-color: #34d399; width: 0%; transition: width 0.3s ease; }
-    
-    /* CSS Khusus Efek Loading Berita */
-    .loading-pulse {
-      animation: pulse 1.5s infinite;
-      color: #64748b; text-align: center; padding: 20px; font-size: 13px;
-    }
-    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body>
-  
-  <div class="desktop-wrapper">
-    <div class="app-container">
-      
-      <div class="header">
-        <div>
-          <span style="font-size: 12px; color: #64748b;">Monevia App</span>
-          <h1 style="margin: 2px 0 0 0; font-size: 18px; font-weight: bold; color: #34d399;">Calon Miliarder</h1>
-        </div>
-        <div style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(52,211,153,0.1); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(52,211,153,0.2);">
-          <span style="color: #34d399; font-weight: bold; font-size: 14px;">M</span>
-        </div>
-      </div>
+<body class="bg-slate-950 text-white font-sans antialiased selection:bg-emerald-500 selection:text-slate-950">
 
-      <div class="main-content" id="page-home">
-        <div class="balance-card">
-          <span style="font-size: 13px; color: #94a3b8;">Total Saldo Aktif</span>
-          <h2 style="font-size: 32px; margin: 6px 0 20px 0; font-weight: bold;" id="display-balance">Rp 0</h2>
-          <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
-            <div>
-              <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pemasukan</span>
-              <div style="color: #34d399; font-weight: bold; margin-top: 2px;" id="display-income">Rp 0</div>
-            </div>
-            <div style="text-align: right;">
-              <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pengeluaran</span>
-              <div style="color: #f43f5e; font-weight: bold; margin-top: 2px;" id="display-expense">Rp 0</div>
-            </div>
-          </div>
-        </div>
+  <!-- Wadah Utama Aplikasi React -->
+  <div id="root"></div>
 
-        <div style="margin-top: 20px; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8;">Statistik Arus Kas (Sen - Min)</h4>
-          <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 2px solid #1e293b; padding-bottom: 4px;" id="chart-container"></div>
-        </div>
-
-        <div style="margin-top: 24px;">
-          <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Riwayat Transaksi</h3>
-          <div id="tx-list-container">
-            <div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="main-content" id="page-target" style="display: none;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Target Tabungan</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Pantau impian finansial Anda</p>
-        <div class="section-card">
-          <h3 style="margin: 0; font-size: 16px;">Dana Darurat</h3>
-          <div style="display: flex; justify-content: space-between; font-size: 13px; color: #94a3b8; margin-top: 10px;">
-            <span id="target-reached">Terkumpul: Rp 0</span>
-            <span>Target: Rp 5.000.000</span>
-          </div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" id="target-progress"></div></div>
-        </div>
-      </div>
-
-      <div class="main-content" id="page-ai" style="display: none;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Monevia AI</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
-        <div class="section-card" id="ai-status-card" style="border-left: 4px solid #34d399;">
-          <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #94a3b8;">Status Keuangan</h4>
-          <p style="margin: 0; font-size: 15px; font-weight: bold;" id="ai-status-text">Belum ada data transaksi.</p>
-        </div>
-        <div class="section-card">
-          <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% kebutuhan pokok, 30% keinginan, dan 20% tabung!</p>
-        </div>
-      </div>
-
-      <div class="main-content" id="page-edu" style="display: none;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Kabar pasar real-time & konten eksklusif</p>
-        
-        <div style="background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
-          <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #34d399;">Rekomendasi Video 🎬</h4>
-          <iframe width="100%" height="200" src="https://youtu.be/Eg4I7PuyiMY?si=hut2ndn31F14jF_p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 12px;"></iframe>
-        </div>
-
-        <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Berita Keuangan Terkini</h3>
-        <div id="news-container">
-          <div class="loading-pulse">Menghubungkan ke server berita CNBC...</div>
-        </div>
-      </div>
-
-      <button class="btn-add" onclick="openModal()">
-        <span style="color: #020617; font-size: 28px; font-weight: bold; margin-top: -2px;">+</span>
-      </button>
-
-      <div class="bottom-nav">
-        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span>🏠</span><span>Beranda</span></button>
-        <button class="nav-item" id="nav-target" onclick="switchTab('target')"><span>🎯</span><span>Target</span></button>
-        <div style="width: 44px;"></div>
-        <button class="nav-item" id="nav-ai" onclick="switchTab('ai')"><span>🤖</span><span>AI Insight</span></button>
-        <button class="nav-item" id="nav-edu" onclick="switchTab('edu')"><span>📰</span><span>Edukasi</span></button>
-      </div>
-
-      <div class="modal-overlay" id="tx-modal" style="display: none;">
-        <div class="modal-box">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; font-size: 16px;">Catat Keuangan</h3>
-            <button onclick="closeModal()" style="background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer;">✕</button>
-          </div>
-
-          <div class="toggle-box">
-            <button class="toggle-btn active-exp" id="toggle-exp" onclick="setType('expense')">Pengeluaran</button>
-            <button class="toggle-btn" id="toggle-inc" onclick="setType('income')">Pemasukan</button>
-          </div>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Nominal (Rp)</label>
-          <input type="text" inputmode="numeric" id="form-amount" placeholder="0" class="input-field" oninput="formatInputRupiah(this)">
-          
-          <div class="quick-grid">
-            <button class="btn-quick" onclick="addQuick(10000)">+10k</button>
-            <button class="btn-quick" onclick="addQuick(20000)">+20k</button>
-            <button class="btn-quick" onclick="addQuick(50000)">+50k</button>
-            <button class="btn-quick" onclick="addQuick(100000)">+100k</button>
-          </div>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Hari</label>
-          <select id="form-day" class="input-field">
-            <option value="Sen">Senin</option><option value="Sel">Selasa</option><option value="Rab">Rabu</option>
-            <option value="Kam">Kamis</option><option value="Jum">Jumat</option><option value="Sab">Sabtu</option>
-            <option value="Min">Minggu</option>
-          </select>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Kategori / Catatan</label>
-          <input type="text" id="form-note" placeholder="Keterangan..." class="input-field">
-
-          <button class="btn-submit" onclick="saveTransaction()">Simpan Transaksi</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-
-  <script>
-    // SISTEM ANTI ERROR GLOBAL
-    window.onerror = function() {
-      console.log("Sistem mendeteksi error kecil, tapi aplikasi tetap berjalan aman.");
+  <!-- Script Aplikasi Berbasis React (JSX) -->
+  <script type="text/babel">
+    
+    // SVG Icons Components to avoid external library loading bugs
+    const Icons = {
+      Home: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      ),
+      Target: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      ),
+      Plus: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      ),
+      Newspaper: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+      ),
+      BrainCircuit: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v3"/><path d="M12 19v3"/><path d="M22 12h-3"/><path d="M5 12H2"/><path d="m17 5-2 2"/><path d="m9 15-2 2"/><path d="m19 17-2-2"/><path d="m7 7-2-2"/><circle cx="12" cy="12" r="4"/></svg>
+      ),
+      X: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      ),
+      Pencil: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      ),
+      Trash: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      ),
+      TrendingUp: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      )
     };
 
-    let transactions = [];
-    try {
-      let savedData = localStorage.getItem('monevia_tx');
-      if (savedData) { 
-        let parsed = JSON.parse(savedData);
-        if(Array.isArray(parsed)) { transactions = parsed; }
-      }
-    } catch (e) {
-      localStorage.removeItem('monevia_tx');
-    }
-
-    let currentType = 'expense';
-    const tabList = ['home', 'target', 'ai', 'edu'];
-    let newsLoaded = false; // Mencegah API mengambil data berulang kali
-
-    function formatRupiah(num) { 
-      return 'Rp ' + (Number(num) || 0).toLocaleString('id-ID'); 
-    }
-
-    function formatInputRupiah(element) {
-      let value = element.value.replace(/[^0-9]/g, '');
-      element.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
-    }
-
-    function switchTab(activeTab) {
-      tabList.forEach(t => {
-        let page = document.getElementById('page-' + t);
-        let nav = document.getElementById('nav-' + t);
-        if(page && nav) {
-          page.style.display = (t === activeTab) ? 'block' : 'none';
-          nav.classList.toggle('active', t === activeTab);
-        }
-      });
-      let activePage = document.getElementById('page-' + activeTab);
-      if(activePage) activePage.scrollTop = 0;
-
-      // Jalankan sistem API berita hanya jika tab Edukasi dibuka pertama kali
-      if(activeTab === 'edu' && !newsLoaded) {
-        fetchNewsAPI();
-      }
-    }
-
-    // FUNGSI BARU: MENYEDOT BERITA DARI INTERNET OTOMATIS
-    async function fetchNewsAPI() {
-      const newsContainer = document.getElementById('news-container');
-      const rssUrl = 'https://www.cnbcindonesia.com/market/rss'; // Sumber Berita CNBC
-      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-
-      try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        if (data.status === 'ok' && data.items.length > 0) {
-          let newsHtml = '';
-          // Hanya ambil 5 berita terbaru
-          data.items.slice(0, 5).forEach((item, index) => {
-            let badge = index === 0 ? '<span style="background-color: #f43f5e; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; display: inline-block;">TERBARU 🔥</span>' : '';
-            newsHtml += `
-              <a href="${item.link}" target="_blank" style="text-decoration: none; display: block; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">
-                ${badge}
-                <h3 style="color: white; font-size: 15px; margin: 0 0 6px 0; line-height: 1.4;">${item.title}</h3>
-                <span style="color: #34d399; font-size: 12px;">Buka Artikel &rarr;</span>
-              </a>
-            `;
-          });
-          newsContainer.innerHTML = newsHtml;
-          newsLoaded = true; // Berita sukses dimuat
-        } else {
-          newsContainer.innerHTML = '<div style="color: #cbd5e1; font-size: 13px; text-align:center;">Gagal memuat berita saat ini. Coba lagi nanti.</div>';
-        }
-      } catch (error) {
-        newsContainer.innerHTML = '<div style="color: #f43f5e; font-size: 13px; text-align:center;">Koneksi terputus. Pastikan internet Anda stabil.</div>';
-      }
-    }
-
-    function openModal() { document.getElementById('tx-modal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('tx-modal').style.display = 'none'; }
-
-    function setType(type) {
-      currentType = type;
-      document.getElementById('toggle-exp').classList.toggle('active-exp', type === 'expense');
-      document.getElementById('toggle-inc').classList.toggle('active-inc', type === 'income');
-    }
-
-    function addQuick(val) {
-      let input = document.getElementById('form-amount');
-      let currentVal = Number(input.value.replace(/[^0-9]/g, '')) || 0;
-      input.value = (currentVal + val).toLocaleString('id-ID');
-    }
-
-    function saveTransaction() {
-      let inputField = document.getElementById('form-amount');
-      let rawAmount = inputField.value.replace(/[^0-9]/g, '');
-      let amount = Number(rawAmount);
-      let day = document.getElementById('form-day').value;
-      let note = document.getElementById('form-note').value || 'Umum';
-
-      if (!amount || amount <= 0) return alert('Masukkan nominal yang benar!');
-
-      transactions.unshift({ type: currentType, amount: amount, day: day, note: note });
-      localStorage.setItem('monevia_tx', JSON.stringify(transactions));
+    function MoneviaApp() {
       
-      inputField.value = '';
-      document.getElementById('form-note').value = '';
-      closeModal();
-      updateDashboard();
+      const [currentTab, setCurrentTab] = React.useState('home');
+      
+      // Transaksi Awal default agar tidak kosong
+      const [transactions, setTransactions] = React.useState([
+        { id: 1, type: 'income', amount: 4500000, category: 'Gaji', note: 'Gaji Pokok Bulanan' },
+        { id: 2, type: 'expense', amount: 250000, category: 'Makanan', note: 'Makan malam mewah' },
+        { id: 3, type: 'expense', amount: 120000, category: 'Transportasi', note: 'Bensin & Tol' }
+      ]);
+      
+      // Target Bulanan Utama (Dapat Diatur)
+      const [monthlySavingsTarget, setMonthlySavingsTarget] = React.useState(10000000); // Default target saldo 10 juta
+      const [tempTarget, setTempTarget] = React.useState('10000000');
+      const [isTargetModalOpen, setIsTargetModalOpen] = React.useState(false);
+      
+      // Rencana Tabungan / Goals Finansial Khusus (Bisa Ditambah & Diisi Saldo)
+      const [goals, setGoals] = React.useState([
+        { id: 101, title: 'Dana Darurat Utama', targetAmount: 5000000, currentAmount: 1500000, category: 'Dana Darurat' },
+        { id: 102, title: 'Ganti Laptop Kerja', targetAmount: 12000000, currentAmount: 3000000, category: 'Elektronik' }
+      ]);
+      
+      const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
+      const [isAddGoalModalOpen, setIsAddGoalModalOpen] = React.useState(false);
+      const [isAddFundsModalOpen, setIsAddFundsModalOpen] = React.useState(false);
+      const [selectedGoalId, setSelectedGoalId] = React.useState(null);
+
+      // Kalkulasi Saldo Otomatis secara Dinamis
+      const totalIncome = transactions.filter(t => t.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
+      const totalExpense = transactions.filter(t => t.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
+      const currentBalance = totalIncome - totalExpense;
+
+      // Format Rupiah Indonesia
+      const formatIDR = (num) => {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+      };
+
+      // Simpan Transaksi Baru
+      const handleAddTransaction = (newTx) => {
+        setTransactions([newTx, ...transactions]);
+        setIsAddModalOpen(false);
+      };
+
+      // Simpan Target Goals Baru
+      const handleAddGoal = (newGoal) => {
+        setGoals([...goals, newGoal]);
+        setIsAddGoalModalOpen(false);
+      };
+
+      // Update Target Tabungan Bulanan Global
+      const handleSaveMonthlyTarget = (e) => {
+        e.preventDefault();
+        const parsed = parseInt(tempTarget, 10);
+        if (!isNaN(parsed) && parsed > 0) {
+          setMonthlySavingsTarget(parsed);
+          setIsTargetModalOpen(false);
+        }
+      };
+
+      // Tambah Saldo Tabungan ke Goals
+      const handleAddGoalFunds = (goalId, amountToAdd) => {
+        if (amountToAdd > currentBalance) {
+          alert('Saldo Anda saat ini tidak mencukupi untuk dialokasikan ke target ini.');
+          return;
+        }
+
+        // 1. Update nominal target spesifik
+        setGoals(goals.map(g => {
+          if (g.id === goalId) {
+            return { ...g, currentAmount: g.currentAmount + amountToAdd };
+          }
+          return g;
+        }));
+
+        // 2. Potong saldo utama dengan mencatatnya sebagai transaksi pengeluaran alokasi tabungan
+        const matchedGoal = goals.find(g => g.id === goalId);
+        const autoTx = {
+          id: Date.now(),
+          type: 'expense',
+          amount: amountToAdd,
+          category: 'Tabungan',
+          note: `Alokasi untuk: ${matchedGoal ? matchedGoal.title : 'Target'}`
+        };
+        setTransactions([autoTx, ...transactions]);
+        setIsAddFundsModalOpen(false);
+      };
+
+      // Hapus Goals
+      const handleDeleteGoal = (id) => {
+        if (confirm('Apakah Anda yakin ingin menghapus target finansial ini?')) {
+          setGoals(goals.filter(g => g.id !== id));
+        }
+      };
+
+      // Hitung persentase target saldo bulanan
+      const targetPercent = Math.min(Math.round((currentBalance / monthlySavingsTarget) * 100), 100);
+
+      return (
+        <div className="min-h-screen pb-24 md:pb-12 flex flex-col bg-gradient-to-br from-slate-950 to-[#0c1322]">
+          
+          {/* Header */}
+          <header className="h-20 bg-slate-950/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-40">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                <Icons.BrainCircuit />
+              </div>
+              <div>
+                <h1 className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">Monevia</h1>
+                <p className="text-[9px] text-emerald-400/80 tracking-widest uppercase">Target & Saving Hub</p>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl hover:brightness-110 active:scale-95 transition-all text-sm shadow-md shadow-emerald-400/20"
+            >
+              <Icons.Plus />
+              <span>Catat Transaksi</span>
+            </button>
+          </header>
+
+          {/* Main Content Area */}
+          <main className="flex-1 p-4 md:p-6 max-w-4xl w-full mx-auto overflow-y-auto scrollbar-hide">
+            
+            {/* TAB 1: DASHBOARD */}
+            {currentTab === 'home' && (
+              <div className="space-y-6">
+                
+                {/* Card Ringkasan Saldo & Target Dinamis */}
+                <div className="bg-gradient-to-br from-slate-900 to-slate-800/80 border border-white/10 rounded-3xl p-6 relative overflow-hidden shadow-2xl">
+                  <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                  
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-slate-400 text-sm font-medium">Total Saldo Terkumpul</p>
+                      <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2 tracking-tight">
+                        {formatIDR(currentBalance)}
+                      </h2>
+                    </div>
+                    
+                    {/* Mengatur Target Bulanan */}
+                    <button 
+                      onClick={() => {
+                        setTempTarget(monthlySavingsTarget.toString());
+                        setIsTargetModalOpen(true);
+                      }}
+                      className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-400 border border-white/5 transition-colors"
+                    >
+                      <Icons.Pencil />
+                      <span>Atur Target</span>
+                    </button>
+                  </div>
+                  
+                  {/* Progress Target Bulanan */}
+                  <div className="mt-8 space-y-2">
+                    <div class="flex justify-between items-end text-xs">
+                      <span className="text-slate-400 font-medium">Target Saldo Bulanan: <strong className="text-emerald-300">{formatIDR(monthlySavingsTarget)}</strong></span>
+                      <span className="text-emerald-400 font-bold text-sm">{targetPercent}%</span>
+                    </div>
+                    
+                    <div className="w-full bg-slate-950/80 h-3 rounded-full overflow-hidden p-[2px] border border-white/5">
+                      <div 
+                        className="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${targetPercent}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 italic">
+                      {targetPercent >= 100 ? "🎉 Selamat! Target saldo bulanan Anda telah tercapai!" : `Kurang ${formatIDR(Math.max(0, monthlySavingsTarget - currentBalance))} lagi untuk mencapai target.`}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/5">
+                    <div className="bg-slate-950/40 p-3 rounded-2xl border border-white/5">
+                      <p className="text-slate-400 text-xs">Pemasukan Hari Ini</p>
+                      <p className="text-emerald-400 font-bold text-base mt-1">{formatIDR(totalIncome)}</p>
+                    </div>
+                    <div className="bg-slate-950/40 p-3 rounded-2xl border border-white/5">
+                      <p className="text-slate-400 text-xs">Pengeluaran & Tabungan</p>
+                      <p className="text-rose-400 font-bold text-base mt-1">{formatIDR(totalExpense)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Riwayat Transaksi */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-lg text-white/90">Transaksi Terkini</h3>
+                    <span className="text-xs text-slate-500">{transactions.length} tercatat</span>
+                  </div>
+
+                  {transactions.length === 0 ? (
+                    <div className="p-10 text-center border-2 border-dashed border-white/5 rounded-3xl text-slate-500 text-sm">
+                      Belum ada catatan aktivitas keuangan masuk atau keluar.
+                    </div>
+                  ) : (
+                    <div className="space-y-2.5">
+                      {transactions.map(tx => (
+                        <div key={tx.id} className="flex items-center justify-between p-4 bg-slate-900/40 border border-white/5 rounded-2xl hover:bg-slate-900/70 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs ${tx.type === 'income' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                              {tx.type === 'income' ? 'IN' : 'OUT'}
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm text-white">{tx.category}</p>
+                              <p className="text-xs text-slate-400 mt-0.5">{tx.note || 'Tanpa catatan'}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className={`font-bold text-sm ${tx.type === 'income' ? 'text-emerald-400' : 'text-slate-100'}`}>
+                              {tx.type === 'income' ? '+' : '-'}{formatIDR(tx.amount)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: TARGET / GOALS TABUNGAN */}
+            {currentTab === 'target' && (
+              <div className="space-y-6">
+                
+                {/* Heading & Button Add Target */}
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">Target Impian Anda</h2>
+                    <p className="text-xs text-slate-400 mt-1">Buat, simpan, dan kelola target finansial khusus Anda.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddGoalModalOpen(true)}
+                    className="flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all"
+                  >
+                    <Icons.Plus />
+                    <span>Target Baru</span>
+                  </button>
+                </div>
+
+                {/* Grid Target Cards */}
+                {goals.length === 0 ? (
+                  <div className="p-12 text-center border-2 border-dashed border-white/5 rounded-3xl text-slate-500">
+                    <p className="text-sm">Anda belum memiliki target impian.</p>
+                    <button 
+                      onClick={() => setIsAddGoalModalOpen(true)}
+                      className="mt-4 text-xs font-bold text-emerald-400 underline"
+                    >
+                      Mulai Bikin Target Baru
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {goals.map(goal => {
+                      const percent = Math.min(Math.round((goal.currentAmount / goal.targetAmount) * 100), 100);
+                      return (
+                        <div key={goal.id} className="bg-slate-900/50 border border-white/5 p-5 rounded-3xl flex flex-col justify-between space-y-4 hover:border-emerald-500/30 transition-all">
+                          <div>
+                            <div className="flex justify-between items-start">
+                              <span className="text-[10px] bg-slate-800 text-emerald-400 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">{goal.category}</span>
+                              <button 
+                                onClick={() => handleDeleteGoal(goal.id)}
+                                className="text-slate-500 hover:text-rose-400 p-1 rounded-lg transition-colors"
+                              >
+                                <Icons.Trash />
+                              </button>
+                            </div>
+                            
+                            <h3 className="font-bold text-base text-white mt-3">{goal.title}</h3>
+                            
+                            <div className="flex justify-between items-end mt-4 text-xs">
+                              <div>
+                                <p className="text-slate-400 text-[10px]">Terkumpul</p>
+                                <p className="font-bold text-emerald-400">{formatIDR(goal.currentAmount)}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-slate-400 text-[10px]">Target Sasaran</p>
+                                <p className="font-bold text-white">{formatIDR(goal.targetAmount)}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Progress bar */}
+                          <div className="space-y-2">
+                            <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden p-[1px] border border-white/5">
+                              <div 
+                                className="bg-gradient-to-r from-emerald-400 to-teal-400 h-full rounded-full transition-all" 
+                                style={{ width: `${percent}%` }}
+                              ></div>
+                            </div>
+                            <div className="flex justify-between items-center text-[10px] text-slate-400">
+                              <span>Kemajuan tabungan</span>
+                              <span class="font-bold text-emerald-400">{percent}%</span>
+                            </div>
+                          </div>
+
+                          {/* Action Button: Nabung ke target */}
+                          <button 
+                            onClick={() => {
+                              setSelectedGoalId(goal.id);
+                              setIsAddFundsModalOpen(true);
+                            }}
+                            className="w-full py-2.5 bg-slate-950 hover:bg-slate-900 border border-emerald-500/20 text-emerald-400 rounded-xl font-bold text-xs transition-colors"
+                          >
+                            Isi Saldo Target ini
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 3: EDUKASI */}
+            {currentTab === 'edu' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">Pusat Edukasi Finansial</h2>
+                  <p className="text-xs text-slate-400 mt-1">Dapatkan wawasan keuangan serta rekomendasi video terbaik.</p>
+                </div>
+
+                {/* Video Rekomendasi Terpilih (Sesuai Permintaan) */}
+                <div className="bg-slate-900/60 border border-white/5 rounded-3xl p-5 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-rose-500/20 text-rose-400 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                      REKOMENDASI VIDEO TERPILIH ⭐
+                    </span>
+                  </div>
+                  
+                  <h3 className="font-bold text-base text-white">Panduan & Cara Kelola Keuangan Pribadi Secara Bijak</h3>
+                  
+                  {/* Youtube Embed Container */}
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+                    <iframe 
+                      className="absolute top-0 left-0 w-full h-full"
+                      src="https://www.youtube.com/embed/Eg4I7PuyiMY" 
+                      title="Rekomendasi Video Edukasi Finansial Monevia" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Tonton video panduan finansial di atas untuk memahami dasar-dasar mengalokasikan pendapatan, menetapkan target keuangan bulanan, dan cara mencapai kebebasan finansial secara efektif.
+                  </p>
+                </div>
+
+                {/* Berita Hot Finansial Lainnya */}
+                <div className="space-y-3">
+                  <h3 className="font-bold text-sm text-slate-400 tracking-wider uppercase">Artikel Populer</h3>
+                  
+                  <a href="https://www.cnbcindonesia.com/market" target="_blank" className="block p-5 bg-slate-900/30 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-all">
+                    <span className="text-[10px] bg-red-500 text-white font-bold px-2.5 py-0.5 rounded mr-2">HOT 🔥</span>
+                    <h4 className="font-bold text-sm mt-3 text-white">IHSG Bergerak Volatil Menjelang Penutupan Pasar Finansial Global</h4>
+                    <p className="text-xs text-slate-400 mt-2">Klik untuk membaca analisis pergerakan saham dan kondisi pasar modal terkini di CNBC Market...</p>
+                  </a>
+                </div>
+              </div>
+            )}
+          </main>
+
+          {/* Bottom Mobile Navigation */}
+          <nav className="fixed bottom-0 left-0 right-0 h-18 bg-slate-950/90 backdrop-blur-md border-t border-white/5 flex items-center justify-around px-6 z-40 pb-safe">
+            <button 
+              onClick={() => setCurrentTab('home')} 
+              className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'home' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Icons.Home />
+              <span className="text-[10px] font-medium">Dashboard</span>
+            </button>
+            
+            <button 
+              onClick={() => setCurrentTab('target')} 
+              className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'target' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Icons.Target />
+              <span class="text-[10px] font-medium">Target</span>
+            </button>
+            
+            <button 
+              onClick={() => setCurrentTab('edu')} 
+              className={`flex flex-col items-center gap-1.5 transition-colors ${currentTab === 'edu' ? 'text-emerald-400' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Icons.Newspaper />
+              <span className="text-[10px] font-medium">Edukasi</span>
+            </button>
+          </nav>
+
+          {/* MODAL 1: ATUR TARGET BULANAN GLOBAL */}
+          {isTargetModalOpen && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-slate-900 border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-base">Atur Target Saldo Bulanan</h3>
+                  <button onClick={() => setIsTargetModalOpen(false)} className="text-slate-400 hover:text-white">
+                    <Icons.X />
+                  </button>
+                </div>
+                
+                <form onSubmit={handleSaveMonthlyTarget} className="space-y-4">
+                  <div>
+                    <label className="text-xs text-slate-400 block mb-2">Target Nominal (Rp)</label>
+                    <input 
+                      type="number" 
+                      value={tempTarget} 
+                      onChange={(e) => setTempTarget(e.target.value)}
+                      placeholder="Contoh: 10000000" 
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-emerald-400"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <button 
+                      type="button" 
+                      onClick={() => setIsTargetModalOpen(false)} 
+                      className="flex-1 py-3 bg-slate-950 text-slate-400 hover:text-white rounded-xl text-xs font-semibold"
+                    >
+                      Batal
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="flex-1 py-3 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold rounded-xl text-xs"
+                    >
+                      Simpan
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL 2: CATAT TRANSAKSI BARU */}
+          {isAddModalOpen && (
+            <AddTransactionModal onClose={() => setIsAddModalOpen(false)} onSave={handleAddTransaction} />
+          )}
+
+          {/* MODAL 3: BUAT TARGET IMPIAN BARU */}
+          {isAddGoalModalOpen && (
+            <AddGoalModal onClose={() => setIsAddGoalModalOpen(false)} onSave={handleAddGoal} />
+          )}
+
+          {/* MODAL 4: MASUKKAN SALDO KE TARGET IMPIAN */}
+          {isAddFundsModalOpen && (
+            <AddFundsModal 
+              onClose={() => setIsAddFundsModalOpen(false)} 
+              onSave={(amount) => handleAddGoalFunds(selectedGoalId, amount)} 
+              maxAllowed={currentBalance}
+            />
+          )}
+
+        </div>
+      );
     }
 
-    function updateDashboard() {
-      let inc = 0, exp = 0;
-      let dayMap = { Sen: 0, Sel: 0, Rab: 0, Kam: 0, Jum: 0, Sab: 0, Min: 0 };
-      let bocorCategory = {};
+    
+    // Modal Tambah Transaksi Sub-Component
+    function AddTransactionModal({ onClose, onSave }) {
+      const [type, setType] = React.useState('expense');
+      const [amount, setAmount] = React.useState('');
+      const [category, setCategory] = React.useState('Makanan');
+      const [note, setNote] = React.useState('');
 
-      transactions.forEach(t => {
-        if (t.type === 'income') {
-          inc += t.amount;
-          dayMap[t.day] += t.amount;
-        } else {
-          exp += t.amount;
-          if(dayMap[t.day] !== undefined) dayMap[t.day] -= t.amount;
-          bocorCategory[t.note] = (bocorCategory[t.note] || 0) + t.amount;
-        }
-      });
+      const quickAmounts = [10000, 20000, 50000, 100000];
 
-      let bal = inc - exp;
-
-      document.getElementById('display-balance').innerText = formatRupiah(bal);
-      document.getElementById('display-income').innerText = formatRupiah(inc);
-      document.getElementById('display-expense').innerText = formatRupiah(exp);
-
-      let listHtml = '';
-      if (transactions.length === 0) {
-        listHtml = '<div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>';
-      } else {
-        transactions.forEach(t => {
-          let sign = t.type === 'income' ? '+' : '-';
-          let color = t.type === 'income' ? '#34d399' : '#f43f5e';
-          listHtml += `<div class="tx-row"><div><strong>${t.note}</strong><div style="font-size:11px;color:#64748b;margin-top:2px;">Hari ${t.day}</div></div><div style="font-weight:bold;color:${color}">${sign}${formatRupiah(t.amount)}</div></div>`;
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!amount || isNaN(parseInt(amount))) return;
+        onSave({
+          id: Date.now(),
+          type,
+          amount: parseInt(amount, 10),
+          category,
+          note
         });
-      }
-      document.getElementById('tx-list-container').innerHTML = listHtml;
+      };
 
-      let chartHtml = '';
-      let maxVal = Math.max(...Object.values(dayMap).map(Math.abs), 1);
-      Object.keys(dayMap).forEach(d => {
-        let val = dayMap[d];
-        let heightPct = Math.min(Math.abs(val) / maxVal * 80, 80) + 10;
-        let barColor = val >= 0 ? '#34d399' : '#f43f5e';
-        if(val === 0) { heightPct = 10; barColor = '#1e293b'; }
-        chartHtml += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;"><div style="width:100%;max-width:14px;height:${heightPct}%;background-color:${barColor};border-radius:4px;"></div><span style="font-size:10px;color:#64748b;margin-top:4px;">${d}</span></div>`;
-      });
-      document.getElementById('chart-container').innerHTML = chartHtml;
+      return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 w-full max-w-md rounded-t-3xl md:rounded-3xl p-6 space-y-5">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-base">Catat Transaksi Baru</h3>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <Icons.X />
+              </button>
+            </div>
 
-      let targetProgress = Math.min((bal / 5000000) * 100, 100);
-      if (bal < 0) targetProgress = 0;
-      document.getElementById('target-reached').innerText = 'Terkumpul: ' + formatRupiah(bal > 0 ? bal : 0);
-      document.getElementById('target-progress').style.width = targetProgress + '%';
+            {/* Toggle Tipe */}
+            <div className="flex bg-slate-950 p-1 rounded-xl border border-white/5">
+              <button type="button" onClick={() => { setType('expense'); setCategory('Makanan'); }} className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${type === 'expense' ? 'bg-rose-500/20 text-rose-400' : 'text-slate-400'}`}>Pengeluaran</button>
+              <button type="button" onClick={() => { setType('income'); setCategory('Gaji'); }} className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${type === 'income' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400'}`}>Pemasukan</button>
+            </div>
 
-      let aiCard = document.getElementById('ai-status-card');
-      let aiText = document.getElementById('ai-status-text');
-      let aiTips = document.getElementById('ai-tips');
+            {/* Input Nominal */}
+            <div>
+              <label className="text-[10px] text-slate-400 block mb-1.5 uppercase font-semibold">Nominal (Rp)</label>
+              <input 
+                type="number" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Masukkan jumlah (Contoh: 50000)" 
+                className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-emerald-400"
+                required
+              />
+              {/* Tombol Cepat Ribuan */}
+              <div className="grid grid-cols-4 gap-2 mt-2">
+                {quickAmounts.map(val => (
+                  <button key={val} type="button" onClick={() => setAmount(val)} className="bg-slate-950 hover:bg-slate-800 border border-white/5 text-slate-300 text-[10px] py-2 rounded-lg font-bold">
+                    +{val/1000}k
+                  </button>
+                ))}
+              </div>
+            </div>
 
-      if (transactions.length === 0) {
-        aiCard.style.borderLeftColor = '#34d399';
-        aiText.innerText = 'Belum ada data transaksi.';
-      } else if (bal < 0) {
-        aiCard.style.borderLeftColor = '#f43f5e';
-        aiText.innerText = '⚠️ Defisit Kas!';
-        aiTips.innerText = 'Pengeluaran lebih besar dari pemasukan. Kurangi pengeluaran non-primer.';
-      } else {
-        aiCard.style.borderLeftColor = '#34d399';
-        let bocorKeys = Object.keys(bocorCategory);
-        if(bocorKeys.length > 0) {
-          let topBocor = bocorKeys.reduce((a, b) => bocorCategory[a] > bocorCategory[b] ? a : b);
-          aiText.innerText = `✅ Kas Sehat: ${formatRupiah(bal)}`;
-          aiTips.innerText = `Pengeluaran terbesar Anda ada di "${topBocor}". Pertahankan kas positif ini!`;
-        } else {
-          aiText.innerText = `✅ Kas Sehat: ${formatRupiah(bal)}`;
-          aiTips.innerText = `Pemasukan Anda lancar, ayo alokasikan ke Target Tabungan!`;
-        }
-      }
+            {/* Kategori */}
+            <div>
+              <label className="text-[10px] text-slate-400 block mb-1.5 uppercase font-semibold">Kategori</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white text-sm outline-none">
+                {type === 'expense' ? (
+                  <>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Nongkrong">Nongkrong</option>
+                    <option value="Belanja">Belanja</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="Gaji">Gaji</option>
+                    <option value="Freelance">Freelance</option>
+                    <option value="Bisnis">Bisnis</option>
+                  </>
+                )}
+              </select>
+            </div>
+
+            <input 
+              type="text" 
+              placeholder="Catatan kecil (opsional)" 
+              value={note} 
+              onChange={(e) => setNote(e.target.value)} 
+              className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-sm text-white outline-none"
+            />
+
+            <button onClick={handleSubmit} className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold py-3.5 rounded-xl hover:brightness-110 active:scale-95 transition-all text-sm shadow-lg">
+              Simpan Transaksi
+            </button>
+          </div>
+        </div>
+      );
     }
 
-    updateDashboard();
+    // Modal Tambah Target Impian Baru (Add Goal)
+    function AddGoalModal({ onClose, onSave }) {
+      const [title, setTitle] = React.useState('');
+      const [targetAmount, setTargetAmount] = React.useState('');
+      const [category, setCategory] = React.useState('Gadget');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!title || !targetAmount) return;
+        onSave({
+          id: Date.now(),
+          title,
+          targetAmount: parseInt(targetAmount, 10),
+          currentAmount: 0,
+          category
+        });
+      };
+
+      return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-base">Buat Target Baru</h3>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <Icons.X />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1">Nama Target</label>
+                <input 
+                  type="text" 
+                  value={title} 
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Contoh: Beli iPhone 15" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-emerald-400"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1">Target Nominal (Rp)</label>
+                <input 
+                  type="number" 
+                  value={targetAmount} 
+                  onChange={(e) => setTargetAmount(e.target.value)}
+                  placeholder="Contoh: 15000000" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-emerald-400"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1">Kategori Target</label>
+                <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white text-xs outline-none">
+                  <option value="Gadget">Gadget & Elektronik</option>
+                  <option value="Liburan">Liburan</option>
+                  <option value="Kendaraan">Kendaraan</option>
+                  <option value="Dana Darurat">Dana Darurat</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <button type="submit" className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold py-3 rounded-xl text-xs">
+                Buat Target
+              </button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    // Modal Isi Tabungan untuk Target Khusus (Add Funds to Goal)
+    function AddFundsModal({ onClose, onSave, maxAllowed }) {
+      const [amount, setAmount] = React.useState('');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const parsed = parseInt(amount, 10);
+        if (!amount || isNaN(parsed) || parsed <= 0) return;
+        onSave(parsed);
+      };
+
+      return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-base">Nabung untuk Target Ini</h3>
+              <button onClick={onClose} className="text-slate-400 hover:text-white">
+                <Icons.X />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="text-[10px] text-slate-400 block mb-1">Nominal yang ditabung (Rp)</label>
+                <input 
+                  type="number" 
+                  value={amount} 
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="Contoh: 500000" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-emerald-400"
+                  max={maxAllowed}
+                  required
+                />
+                <span className="text-[10px] text-slate-500 mt-1 block">Maksimal tabungan saat ini: <strong className="text-emerald-400">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(maxAllowed)}</strong></span>
+              </div>
+
+              <button type="submit" className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold py-3 rounded-xl text-xs">
+                Konfirmasi Tabungan
+              </button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    
+    // Inisialisasi dan Render dengan ReactDOM yang benar (Bukan revolutionaryReactDOM)
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<MoneviaApp />);
   </script>
 </body>
 </html>
