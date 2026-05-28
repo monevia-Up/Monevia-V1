@@ -6,117 +6,59 @@
   <title>Monevia - Personal Finance</title>
   
   <style>
-    /* RESET SUPER BERSIH */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* KUNCIAN LAYAR UTAMA (ANTI BLANK/ANTI MELAR) */
-    .desktop-wrapper {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #020617;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100%; height: 100%; background-color: #020617;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #ffffff;
+      color: #ffffff; overflow: hidden;
     }
-
-    /* BINGKAI APLIKASI (PASTI PAS DI LAYAR HP) */
+    .desktop-wrapper {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #020617; display: flex; justify-content: center; align-items: center;
+    }
     .app-container {
-      width: 100%;
-      height: 100%;
-      background-color: #090d16;
-      display: flex;
-      flex-direction: column;
-      position: relative;
+      width: 100%; height: 100%; background-color: #090d16;
+      display: flex; flex-direction: column; position: relative;
     }
-
-    /* TAMPILAN LAPTOP / TABLET */
     @media screen and (min-width: 601px) {
       .app-container {
-        max-width: 412px;
-        height: 90vh;
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-        overflow: hidden;
+        max-width: 412px; height: 90vh; border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 60px rgba(0,0,0,0.8); overflow: hidden;
       }
     }
-
-    /* HEADER */
     .header {
-      flex: 0 0 auto;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #090d16;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      z-index: 10;
+      flex: 0 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+      background-color: #090d16; border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;
     }
-    
-    /* AREA SCROLL KONTEN TENGAH */
     .main-content {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      padding: 20px;
-      padding-bottom: 90px; /* Jarak aman dari tombol tambah */
-      -webkit-overflow-scrolling: touch;
+      flex: 1 1 auto; overflow-y: auto; padding: 20px; padding-bottom: 90px; -webkit-overflow-scrolling: touch;
     }
-    
-    /* NAVBAR BAWAH (DIKUNCI MUTLAK DI BAWAH) */
     .bottom-nav {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 70px;
-      background-color: #020617;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      z-index: 10;
+      position: absolute; bottom: 0; left: 0; right: 0; height: 70px;
+      background-color: #020617; border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 10;
     }
-    
-    /* TOMBOL TAMBAH MELAYANG */
     .btn-add {
-      position: absolute;
-      bottom: 42px; left: 50%;
-      transform: translateX(-50%);
-      width: 56px; height: 56px;
-      background-color: #34d399;
-      border-radius: 50%;
-      display: flex; justify-content: center; align-items: center;
-      border: none; cursor: pointer;
-      box-shadow: 0 0 20px rgba(52,211,153,0.4);
-      z-index: 100;
+      position: absolute; bottom: 42px; left: 50%; transform: translateX(-50%);
+      width: 56px; height: 56px; background-color: #34d399; border-radius: 50%;
+      display: flex; justify-content: center; align-items: center; border: none; cursor: pointer;
+      box-shadow: 0 0 20px rgba(52,211,153,0.4); z-index: 100;
     }
-    
     .nav-item {
       background: none; border: none; color: #64748b; font-size: 11px;
       cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;
     }
     .nav-item.active { color: #34d399; }
-    
-    /* DESAIN KOMPONEN */
     .balance-card {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
-    
     .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0,0,0,0.85); z-index: 999;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 999;
       display: flex; align-items: flex-end; justify-content: center;
     }
     .modal-box {
-      width: 100%; background-color: #090d16;
-      border-top-left-radius: 28px; border-top-right-radius: 28px;
+      width: 100%; background-color: #090d16; border-top-left-radius: 28px; border-top-right-radius: 28px;
       padding: 24px; border-top: 1px solid rgba(255,255,255,0.1);
     }
     @media screen and (min-width: 601px) {
@@ -153,6 +95,13 @@
     }
     .progress-bar-bg { width: 100%; height: 8px; background-color: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 8px; }
     .progress-bar-fill { height: 100%; background-color: #34d399; width: 0%; transition: width 0.3s ease; }
+    
+    /* CSS Khusus Efek Loading Berita */
+    .loading-pulse {
+      animation: pulse 1.5s infinite;
+      color: #64748b; text-align: center; padding: 20px; font-size: 13px;
+    }
+    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
   </style>
 </head>
 <body>
@@ -217,21 +166,27 @@
         <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
         <div class="section-card" id="ai-status-card" style="border-left: 4px solid #34d399;">
           <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #94a3b8;">Status Keuangan</h4>
-          <p style="margin: 0; font-size: 15px; font-weight: bold;" id="ai-status-text">Belum ada data.</p>
+          <p style="margin: 0; font-size: 15px; font-weight: bold;" id="ai-status-text">Belum ada data transaksi.</p>
         </div>
         <div class="section-card">
           <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20 untuk membagi gaji Anda!</p>
+          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% kebutuhan pokok, 30% keinginan, dan 20% tabung!</p>
         </div>
       </div>
 
       <div class="main-content" id="page-edu" style="display: none;">
         <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Update pasar saham & kripto terhangat</p>
-        <a href="https://www.cnbcindonesia.com/market" target="_blank" style="text-decoration: none; display: block; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(244,63,94,0.3); margin-bottom: 12px;">
-          <span style="background-color: #f43f5e; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px;">HOT 🔥</span>
-          <h3 style="color: white; font-size: 15px; margin: 10px 0 6px 0; line-height: 1.4;">IHSG Diprediksi Menguat Tajam</h3>
-        </a>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Kabar pasar real-time & konten eksklusif</p>
+        
+        <div style="background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+          <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #34d399;">Rekomendasi Video 🎬</h4>
+          <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 12px;"></iframe>
+        </div>
+
+        <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Berita Keuangan Terkini</h3>
+        <div id="news-container">
+          <div class="loading-pulse">Menghubungkan ke server berita CNBC...</div>
+        </div>
       </div>
 
       <button class="btn-add" onclick="openModal()">
@@ -286,10 +241,9 @@
   </div>
 
   <script>
-    // FITUR ANTI ERROR GLOBAL: Jika ada sistem JS yang rusak, bersihkan cache agar tidak blank
+    // SISTEM ANTI ERROR GLOBAL
     window.onerror = function() {
-      localStorage.removeItem('monevia_tx');
-      console.log("Sistem mendeteksi error dan telah melakukan pembersihan memori otomatis.");
+      console.log("Sistem mendeteksi error kecil, tapi aplikasi tetap berjalan aman.");
     };
 
     let transactions = [];
@@ -305,6 +259,7 @@
 
     let currentType = 'expense';
     const tabList = ['home', 'target', 'ai', 'edu'];
+    let newsLoaded = false; // Mencegah API mengambil data berulang kali
 
     function formatRupiah(num) { 
       return 'Rp ' + (Number(num) || 0).toLocaleString('id-ID'); 
@@ -326,6 +281,44 @@
       });
       let activePage = document.getElementById('page-' + activeTab);
       if(activePage) activePage.scrollTop = 0;
+
+      // Jalankan sistem API berita hanya jika tab Edukasi dibuka pertama kali
+      if(activeTab === 'edu' && !newsLoaded) {
+        fetchNewsAPI();
+      }
+    }
+
+    // FUNGSI BARU: MENYEDOT BERITA DARI INTERNET OTOMATIS
+    async function fetchNewsAPI() {
+      const newsContainer = document.getElementById('news-container');
+      const rssUrl = 'https://www.cnbcindonesia.com/market/rss'; // Sumber Berita CNBC
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.status === 'ok' && data.items.length > 0) {
+          let newsHtml = '';
+          // Hanya ambil 5 berita terbaru
+          data.items.slice(0, 5).forEach((item, index) => {
+            let badge = index === 0 ? '<span style="background-color: #f43f5e; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; display: inline-block;">TERBARU 🔥</span>' : '';
+            newsHtml += `
+              <a href="${item.link}" target="_blank" style="text-decoration: none; display: block; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">
+                ${badge}
+                <h3 style="color: white; font-size: 15px; margin: 0 0 6px 0; line-height: 1.4;">${item.title}</h3>
+                <span style="color: #34d399; font-size: 12px;">Buka Artikel &rarr;</span>
+              </a>
+            `;
+          });
+          newsContainer.innerHTML = newsHtml;
+          newsLoaded = true; // Berita sukses dimuat
+        } else {
+          newsContainer.innerHTML = '<div style="color: #cbd5e1; font-size: 13px; text-align:center;">Gagal memuat berita saat ini. Coba lagi nanti.</div>';
+        }
+      } catch (error) {
+        newsContainer.innerHTML = '<div style="color: #f43f5e; font-size: 13px; text-align:center;">Koneksi terputus. Pastikan internet Anda stabil.</div>';
+      }
     }
 
     function openModal() { document.getElementById('tx-modal').style.display = 'flex'; }
