@@ -10,23 +10,47 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #090d16;
+      background-color: #020617; /* Warna luar laptop */
       color: #ffffff;
       min-height: 100vh;
-      position: fixed;
-      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
     }
+    
     .app-container {
       width: 100%;
+      max-width: 412px; /* Standar tampilan laptop */
       height: 100vh;
-      height: -webkit-fill-available;
       background-color: #090d16;
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
+      border-left: 1px solid rgba(255,255,255,0.05);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
     }
+
+    /* PAKSA FULL SCREEN JIKA SENSOR LAYAR DI BAWAH 600PX (HP) */
+    @media screen and (max-width: 600px) {
+      body {
+        background-color: #090d16 !important;
+        position: fixed;
+        width: 100%;
+      }
+      .app-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        border-left: none !important;
+        border-right: none !important;
+        box-shadow: none !important;
+        height: 100vh !important;
+        height: -webkit-fill-available !important;
+      }
+    }
+
     .header {
       padding: 20px;
       display: flex;
@@ -92,25 +116,32 @@
       gap: 4px;
     }
     .nav-item.active { color: #34d399; }
+    
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background-color: rgba(0,0,0,0.85);
       z-index: 999;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
+      padding: 20px;
     }
     .modal-box {
       width: 100%;
-      max-width: 412px;
+      max-width: 370px;
       background-color: #090d16;
-      border-top-left-radius: 28px;
-      border-top-right-radius: 28px;
+      border-radius: 24px;
       padding: 24px;
       box-sizing: border-box;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
     }
+
+    @media screen and (max-width: 600px) {
+      .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
+      .modal-box { max-width: 100% !important; border-radius: 0 !important; border-top-left-radius: 28px !important; border-top-right-radius: 28px !important; }
+    }
+
     .input-field {
       width: 100%;
       background-color: #0f172a;
@@ -205,7 +236,7 @@
 </head>
 <body>
 
-  <div class="app-container">
+  <div class="app-container" id="appContainer">
     <!-- Header -->
     <div class="header">
       <div>
@@ -356,6 +387,18 @@
   </div>
 
   <script>
+    // FORCE HARDWARE ACCELERATION DETECTION UNTUK HP
+    function adjustResponsiveLayout() {
+      const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      const container = document.getElementById('appContainer');
+      if (width <= 600) {
+        container.style.maxWidth = '100%';
+        container.style.width = '100%';
+      }
+    }
+    window.addEventListener('resize', adjustResponsiveLayout);
+    window.addEventListener('load', adjustResponsiveLayout);
+
     let transactions = JSON.parse(localStorage.getItem('monevia_tx')) || [];
     let currentType = 'expense';
     const tabList = ['home', 'target', 'ai', 'edu'];
