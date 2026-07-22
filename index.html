@@ -1,708 +1,278 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Monevia - Personal Finance</title>
-  
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      width: 100%; height: 100%; background-color: #020617;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #ffffff; overflow: hidden;
-    }
-    .desktop-wrapper {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #020617; display: flex; justify-content: center; align-items: center;
-    }
-    .app-container {
-      width: 100%; height: 100%; background-color: #090d16;
-      display: flex; flex-direction: column; position: relative;
-    }
-    @media screen and (min-width: 601px) {
-      .app-container {
-        max-width: 412px; height: 90vh; border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 60px rgba(0,0,0,0.8); overflow: hidden;
-      }
-    }
-    .header {
-      flex: 0 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
-      background-color: #090d16; border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;
-    }
-    .main-content {
-      flex: 1 1 auto; overflow-y: auto; padding: 20px; padding-bottom: 90px; -webkit-overflow-scrolling: touch;
-    }
-    .bottom-nav {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 70px;
-      background-color: #020617; border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 10;
-    }
-    .btn-add {
-      position: absolute; bottom: 42px; left: 50%; transform: translateX(-50%);
-      width: 56px; height: 56px; background-color: #34d399; border-radius: 50%;
-      display: flex; justify-content: center; align-items: center; border: none; cursor: pointer;
-      box-shadow: 0 0 20px rgba(52,211,153,0.4); z-index: 100;
-    }
-    .nav-item {
-      background: none; border: none; color: #64748b; font-size: 11px;
-      cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;
-    }
-    .nav-item.active { color: #34d399; }
-    .balance-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
-    
-    /* General Modal Styles */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 999;
-      display: flex; align-items: flex-end; justify-content: center;
-    }
-    .modal-overlay-center {
-      align-items: center; padding: 20px;
-    }
-    .modal-box {
-      width: 100%; background-color: #090d16; border-top-left-radius: 28px; border-top-right-radius: 28px;
-      padding: 24px; border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    .modal-box-center {
-      border-radius: 24px; max-width: 320px; border: 1px solid rgba(255,255,255,0.1);
-    }
-    @media screen and (min-width: 601px) {
-      .modal-overlay { align-items: center; padding: 20px; }
-      .modal-box { max-width: 370px; border-radius: 24px; }
-    }
-    
-    .input-field {
-      width: 100%; background-color: #0f172a; border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px; padding: 14px; color: white; font-size: 16px; margin-bottom: 12px; outline: none;
-    }
-    .btn-submit {
-      width: 100%; background-color: #34d399; color: #020617; font-weight: bold;
-      padding: 14px; border-radius: 12px; border: none; font-size: 16px; cursor: pointer;
-    }
-    .btn-danger { background-color: #f43f5e; color: white; }
-    .btn-secondary { background-color: #1e293b; color: white; }
-    
-    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; margin-bottom: 16px; }
-    .btn-quick {
-      background-color: #0f172a; border: 1px solid rgba(255,255,255,0.05); color: #cbd5e1;
-      padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer;
-    }
-    .tx-row {
-      display: flex; justify-content: space-between; align-items: center; background-color: #0f172a;
-      padding: 14px; border-radius: 16px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.02);
-    }
-    .toggle-box { display: flex; background-color: #0f172a; padding: 4px; border-radius: 10px; margin-bottom: 16px; }
-    .toggle-btn {
-      flex: 1; background: none; border: none; color: #64748b; padding: 8px;
-      font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer;
-    }
-    .toggle-btn.active-exp { background-color: rgba(244,63,94,0.2); color: #f43f5e; }
-    .toggle-btn.active-inc { background-color: rgba(52,211,153,0.2); color: #34d399; }
-    .section-card {
-      background-color: #0f172a; border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 20px; padding: 16px; margin-bottom: 16px; position: relative;
-    }
-    .progress-bar-bg { width: 100%; height: 8px; background-color: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 8px; }
-    .progress-bar-fill { height: 100%; background-color: #34d399; width: 0%; transition: width 0.3s ease; }
-    .loading-pulse { animation: pulse 1.5s infinite; color: #64748b; text-align: center; padding: 20px; font-size: 13px; }
-    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google - Pencarian Hari Pasca PM Pendamping</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #ffffff;
+            color: #202124;
+        }
+
+        /* Header / Navbar */
+        header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 15px 30px;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        header a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container Utama */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+            flex-grow: 1;
+            padding: 0 20px;
+        }
+
+        /* Logo Google */
+        .logo {
+            font-size: 90px;
+            font-weight: bold;
+            letter-spacing: -3px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+
+        .logo span:nth-child(1) { color: #4285F4; }
+        .logo span:nth-child(2) { color: #EA4335; }
+        .logo span:nth-child(3) { color: #FBBC05; }
+        .logo span:nth-child(4) { color: #4285F4; }
+        .logo span:nth-child(5) { color: #34A853; }
+        .logo span:nth-child(6) { color: #EA4335; }
+
+        /* Box Pencarian */
+        .search-box {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 584px;
+            height: 46px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            padding: 0 15px;
+            box-shadow: none;
+            transition: box-shadow 0.2s;
+        }
+
+        .search-box:hover, .search-box:focus-within {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            border-color: rgba(223, 225, 229, 0);
+        }
+
+        .search-icon {
+            color: #9aa0a6;
+            margin-right: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        /* Tombol */
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 4px;
+            color: #3c4043;
+            font-size: 14px;
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            border-color: #dadce0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            color: #202124;
+        }
+
+        /* Bagian Hasil Pencarian */
+        .results-container {
+            width: 100%;
+            max-width: 650px;
+            margin-top: 40px;
+            display: none; /* Sembunyi secara default */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-item {
+            margin-bottom: 25px;
+        }
+
+        .result-url {
+            font-size: 14px;
+            color: #202124;
+            margin-bottom: 4px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            color: #1a0dab;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .result-title:hover {
+            text-decoration: underline;
+        }
+
+        .result-snippet {
+            font-size: 14px;
+            color: #4d5156;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f2f2f2;
+            color: #70757a;
+            font-size: 14px;
+            margin-top: auto;
+        }
+
+        .footer-location {
+            padding: 15px 30px;
+            border-bottom: 1px solid #dadce0;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links div {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #70757a;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: #020617; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px; transition: opacity 0.4s ease;">
-    <div style="width: 100%; max-width: 320px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 32px 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); text-align: center;">
-      <div style="width: 64px; height: 64px; border-radius: 50%; background-color: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.2); display: flex; justify-content: center; align-items: center; margin: 0 auto 16px auto;">
-        <span style="color: #34d399; font-weight: bold; font-size: 28px;">M</span>
-      </div>
-      <h2 style="font-size: 24px; color: white; margin: 0 0 8px 0; font-weight: bold;">Monevia</h2>
-      <p style="font-size: 13px; color: #64748b; margin: 0 0 24px 0;">Masukkan kata sandi untuk mengakses data finansial Anda.</p>
-      
-      <input type="password" id="login-password" placeholder="Kata Sandi" class="input-field" style="text-align: center; margin-bottom: 12px;" onkeypress="if(event.key === 'Enter') checkPassword()">
-      
-      <p id="login-error" style="color: #f43f5e; font-size: 12px; margin: 0 0 12px 0; display: none; font-weight: bold;">Kata sandi salah!</p>
-      
-      <button class="btn-submit" onclick="checkPassword()">Buka Aplikasi</button>
+
+    <header>
+        <a href="#">Gmail</a>
+        <a href="#">Gambar</a>
+    </header>
+
+    <div class="container">
+        <!-- Logo Google -->
+        <div class="logo">
+            <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+        </div>
+
+        <!-- Box Input -->
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" value="Hari Pasca PM Pendamping dilaksanakan Pada tanggal 22 juli">
+        </div>
+
+        <!-- Tombol Pencarian -->
+        <div class="buttons">
+            <button class="btn" onclick="executeSearch()">Penelusuran Google</button>
+            <button class="btn">Saya Lagi Beruntung</button>
+        </div>
+
+        <!-- Hasil Pencarian -->
+        <div class="results-container" id="resultsContainer">
+            <div class="result-item">
+                <div class="result-url">https://www.kegiatan-pendamping.id › informasi › pasca-pm</div>
+                <a href="#" class="result-title">Hari Pasca PM Pendamping - Pelaksanaan Tanggal 22 Juli</a>
+                <div class="result-snippet">
+                    <strong>22 Juli:</strong> Pelaksanaan kegiatan Hari Pasca PM (Penilaian/Pendampingan) Pendamping dijadwalkan secara resmi pada tanggal 22 Juli. Agenda ini mencakup evaluasi program, peninjauan hasil pendampingan lapangan, serta koordinasi lanjutan antar unit pendamping.
+                </div>
+            </div>
+
+            <div class="result-item">
+                <div class="result-url">https://www.jadwal-kegiatan.org › agenda › juli</div>
+                <a href="#" class="result-title">Jadwal Agenda & Evaluasi Pasca PM Pendamping</a>
+                <div class="result-snippet">
+                    Informasi lengkap mengenai alur dan tahapan Pasca PM Pendamping yang diselenggarakan pada 22 Juli. Pastikan seluruh berkas laporan evaluasi telah diunggah sebelum tanggal pelaksanaan.
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="desktop-wrapper">
-    <div class="app-container">
-      
-      <!-- HEADER -->
-      <div class="header">
-        <div>
-          <span style="font-size: 12px; color: #64748b;">Monevia App</span>
-          <h1 style="margin: 2px 0 0 0; font-size: 18px; font-weight: bold; color: #34d399;">Calon Miliarder</h1>
-        </div>
-        <div style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(52,211,153,0.1); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(52,211,153,0.2);">
-          <span style="color: #34d399; font-weight: bold; font-size: 14px;">M</span>
-        </div>
-      </div>
-
-      <!-- PAGE: BERANDA -->
-      <div class="main-content" id="page-home">
-        <div class="balance-card">
-          <span style="font-size: 13px; color: #94a3b8;">Total Saldo Aktif</span>
-          <h2 style="font-size: 32px; margin: 6px 0 20px 0; font-weight: bold;" id="display-balance">Rp 0</h2>
-          <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+    <footer>
+        <div class="footer-location">Indonesia</div>
+        <div class="footer-links">
             <div>
-              <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pemasukan</span>
-              <div style="color: #34d399; font-weight: bold; margin-top: 2px;" id="display-income">Rp 0</div>
+                <a href="#">Tentang</a>
+                <a href="#">Periklanan</a>
+                <a href="#">Bisnis</a>
+                <a href="#">Cara kerja Penelusuran</a>
             </div>
-            <div style="text-align: right;">
-              <span style="font-size: 10px; color: #64748b; text-transform: uppercase;">Pengeluaran</span>
-              <div style="color: #f43f5e; font-weight: bold; margin-top: 2px;" id="display-expense">Rp 0</div>
+            <div>
+                <a href="#">Privasi</a>
+                <a href="#">Persyaratan</a>
+                <a href="#">Setelan</a>
             </div>
-          </div>
         </div>
+    </footer>
 
-        <div style="margin-top: 20px; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #94a3b8;">Statistik Arus Kas (Sen - Min)</h4>
-          <div style="height: 100px; display: flex; align-items: flex-end; gap: 8px; border-bottom: 2px solid #1e293b; padding-bottom: 4px;" id="chart-container"></div>
-        </div>
-
-        <div style="margin-top: 24px;">
-          <h3 style="font-size: 15px; margin-bottom: 12px; color: #cbd5e1;">Riwayat Transaksi</h3>
-          <div id="tx-list-container">
-            <div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PAGE: TARGET TABUNGAN DINAMIS -->
-      <div class="main-content" id="page-target" style="display: none;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Target Tabungan</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Pantau dan isi impian finansial Anda secara spesifik</p>
-        
-        <!-- Wadah List Target -->
-        <div id="goals-list-container"></div>
-        
-        <div class="section-card" style="border-style: dashed; background: transparent; text-align: center; cursor: pointer;" onclick="openGoalModal()">
-          <span style="color: #64748b; font-size: 14px; font-weight: bold;">+ Buat Target Baru</span>
-        </div>
-      </div>
-
-      <!-- PAGE: AI -->
-      <div class="main-content" id="page-ai" style="display: none;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Monevia AI</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Analisis finansial otomatis 24 jam</p>
-        
-        <div class="section-card" id="ai-status-card" style="border-left: 4px solid #34d399;">
-          <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #94a3b8;">Status Keuangan</h4>
-          <p style="margin: 0; font-size: 15px; font-weight: bold;" id="ai-status-text">Belum ada data transaksi.</p>
-        </div>
-        <div class="section-card">
-          <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #34d399;">Tips Hemat Hari Ini 💡</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;" id="ai-tips">Gunakan aturan 50/30/20. Alokasikan 50% kebutuhan pokok, 30% keinginan, dan 20% tabung!</p>
-        </div>
-      </div>
-
-      <!-- PAGE: EDUKASI & BERITA -->
-      <div class="main-content" id="page-edu" style="display: none;">
-        <h2 style="font-size: 20px; margin: 0 0 4px 0;">Edukasi & Berita</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 20px 0;">Kabar pasar real-time & konten eksklusif</p>
-        
-        <!-- Video Youtube (Otomatis memutar video edukasi) -->
-        <div style="background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
-          <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #34d399;">Tonton Tips Hari Ini 🎬</h4>
-          <iframe width="100%" height="200" src="https://www.youtube.com/embed/Eg4I7PuyiMY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 12px;"></iframe>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="font-size: 15px; color: #cbd5e1; margin: 0;">Berita Keuangan Terkini</h3>
-          <button onclick="fetchNewsAPI(true)" style="background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2); padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold;">🔄 Perbarui</button>
-        </div>
-        
-        <div id="news-container">
-          <div class="loading-pulse">Menghubungkan ke server berita CNBC...</div>
-        </div>
-      </div>
-
-      <!-- TOMBOL TAMBAH -->
-      <button class="btn-add" onclick="openModal()">
-        <span style="color: #020617; font-size: 28px; font-weight: bold; margin-top: -2px;">+</span>
-      </button>
-
-      <!-- NAVBAR BAWAH -->
-      <div class="bottom-nav">
-        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span>🏠</span><span>Beranda</span></button>
-        <button class="nav-item" id="nav-target" onclick="switchTab('target')"><span>🎯</span><span>Target</span></button>
-        <div style="width: 44px;"></div>
-        <button class="nav-item" id="nav-ai" onclick="switchTab('ai')"><span>🤖</span><span>AI Insight</span></button>
-        <button class="nav-item" id="nav-edu" onclick="switchTab('edu')"><span>📰</span><span>Edukasi</span></button>
-      </div>
-
-      <!-- MODAL TRANSAKSI -->
-      <div class="modal-overlay" id="tx-modal" style="display: none;">
-        <div class="modal-box">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; font-size: 16px;">Catat Keuangan</h3>
-            <button onclick="closeModal()" style="background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer;">✕</button>
-          </div>
-
-          <div class="toggle-box">
-            <button class="toggle-btn active-exp" id="toggle-exp" onclick="setType('expense')">Pengeluaran</button>
-            <button class="toggle-btn" id="toggle-inc" onclick="setType('income')">Pemasukan</button>
-          </div>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Nominal (Rp)</label>
-          <input type="text" inputmode="numeric" id="form-amount" placeholder="0" class="input-field" oninput="formatInputRupiah(this)">
-          
-          <div class="quick-grid">
-            <button class="btn-quick" onclick="addQuick('form-amount', 10000)">+10k</button>
-            <button class="btn-quick" onclick="addQuick('form-amount', 20000)">+20k</button>
-            <button class="btn-quick" onclick="addQuick('form-amount', 50000)">+50k</button>
-            <button class="btn-quick" onclick="addQuick('form-amount', 100000)">+100k</button>
-          </div>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Hari</label>
-          <select id="form-day" class="input-field">
-            <option value="Sen">Senin</option><option value="Sel">Selasa</option><option value="Rab">Rabu</option>
-            <option value="Kam">Kamis</option><option value="Jum">Jumat</option><option value="Sab">Sabtu</option>
-            <option value="Min">Minggu</option>
-          </select>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Kategori / Catatan</label>
-          <input type="text" id="form-note" placeholder="Keterangan..." class="input-field">
-
-          <button class="btn-submit" onclick="saveTransaction()">Simpan Transaksi</button>
-        </div>
-      </div>
-
-      <!-- MODAL TARGET BARU -->
-      <div class="modal-overlay" id="goal-modal" style="display: none;">
-        <div class="modal-box">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; font-size: 16px;">Buat Target Baru</h3>
-            <button onclick="closeGoalModal()" style="background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer;">✕</button>
-          </div>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Nama Target</label>
-          <input type="text" id="form-goal-name" placeholder="Contoh: Beli Laptop Baru" class="input-field">
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Nominal Target (Rp)</label>
-          <input type="text" inputmode="numeric" id="form-goal-amount" placeholder="0" class="input-field" oninput="formatInputRupiah(this)">
-
-          <button class="btn-submit" onclick="saveGoal()" style="margin-top: 10px;">Simpan Target</button>
-        </div>
-      </div>
-
-      <!-- MODAL TOP UP TARGET -->
-      <div class="modal-overlay" id="topup-modal" style="display: none;">
-        <div class="modal-box">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; font-size: 16px;">Isi Tabungan</h3>
-            <button onclick="closeTopUpModal()" style="background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer;">✕</button>
-          </div>
-
-          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">Uang yang dimasukkan ke target ini akan otomatis memotong saldo utama Anda (dicatat sebagai pengeluaran).</p>
-
-          <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 6px;">Nominal Top Up (Rp)</label>
-          <input type="text" inputmode="numeric" id="form-topup-amount" placeholder="0" class="input-field" oninput="formatInputRupiah(this)">
-          
-          <div class="quick-grid">
-            <button class="btn-quick" onclick="addQuick('form-topup-amount', 10000)">+10k</button>
-            <button class="btn-quick" onclick="addQuick('form-topup-amount', 50000)">+50k</button>
-            <button class="btn-quick" onclick="addQuick('form-topup-amount', 100000)">+100k</button>
-            <button class="btn-quick" onclick="addQuick('form-topup-amount', 500000)">+500k</button>
-          </div>
-
-          <button class="btn-submit" onclick="saveTopUp()" style="margin-top: 10px;">Simpan Tabungan</button>
-        </div>
-      </div>
-
-      <!-- CUSTOM ALERT MODAL -->
-      <div class="modal-overlay modal-overlay-center" id="custom-alert-modal" style="display: none;">
-        <div class="modal-box modal-box-center" style="text-align: center;">
-          <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #f43f5e;">Perhatian</h3>
-          <p id="custom-alert-message" style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px; line-height: 1.5;"></p>
-          <button class="btn-submit" onclick="closeCustomAlert()">Mengerti</button>
-        </div>
-      </div>
-
-      <!-- CUSTOM CONFIRM MODAL -->
-      <div class="modal-overlay modal-overlay-center" id="custom-confirm-modal" style="display: none;">
-        <div class="modal-box modal-box-center" style="text-align: center;">
-          <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #f43f5e;">Konfirmasi</h3>
-          <p id="custom-confirm-message" style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px; line-height: 1.5;"></p>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn-submit btn-secondary" onclick="closeCustomConfirm()">Batal</button>
-            <button class="btn-submit btn-danger" id="custom-confirm-btn">Hapus</button>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-
-  <script>
-    window.onerror = function() { console.log("Sistem mencegah tampilan error agar UI tetap stabil."); };
-
-    // LOGIKA LOGIN SCREEN
-    function checkAuth() {
-      if (localStorage.getItem('monevia_auth') === 'true') {
-        document.getElementById('login-screen').style.display = 'none';
-      }
-    }
-    // Cek status saat aplikasi pertama dibuka
-    checkAuth();
-
-    function checkPassword() {
-      let pwd = document.getElementById('login-password').value;
-      let errorText = document.getElementById('login-error');
-      
-      if (pwd === 'MoneviaYsl12') {
-        localStorage.setItem('monevia_auth', 'true');
-        let loginScreen = document.getElementById('login-screen');
-        loginScreen.style.opacity = '0'; // Animasi memudar
-        setTimeout(() => { loginScreen.style.display = 'none'; }, 400); // Hilangkan setelah animasi selesai
-      } else {
-        errorText.style.display = 'block';
-        setTimeout(() => { errorText.style.display = 'none'; }, 3000); // Hilangkan pesan error setelah 3 detik
-      }
-    }
-
-    // Custom UI Alert & Confirm Logic (Mencegah penggunaan alert/confirm bawaan browser)
-    function showMsg(message) {
-      document.getElementById('custom-alert-message').innerText = message;
-      document.getElementById('custom-alert-modal').style.display = 'flex';
-    }
-    function closeCustomAlert() {
-      document.getElementById('custom-alert-modal').style.display = 'none';
-    }
-
-    let confirmCallback = null;
-    function showConfirm(message, callback) {
-      document.getElementById('custom-confirm-message').innerText = message;
-      document.getElementById('custom-confirm-modal').style.display = 'flex';
-      confirmCallback = callback;
-    }
-    function closeCustomConfirm() {
-      document.getElementById('custom-confirm-modal').style.display = 'none';
-      confirmCallback = null;
-    }
-    document.getElementById('custom-confirm-btn').addEventListener('click', function() {
-      if (confirmCallback) confirmCallback();
-      closeCustomConfirm();
-    });
-
-    // Inisialisasi Data
-    let transactions = [];
-    let goals = []; // Format baru: { id, name, targetAmount, savedAmount }
-    
-    try {
-      let savedTx = localStorage.getItem('monevia_tx');
-      if (savedTx) { let p = JSON.parse(savedTx); if(Array.isArray(p)) transactions = p; }
-      
-      let savedGoals = localStorage.getItem('monevia_goals');
-      if (savedGoals) { 
-        let g = JSON.parse(savedGoals); 
-        if(Array.isArray(g)) {
-          // Migrasi data lama (jika ada) ke format baru
-          goals = g.map(goal => ({
-            id: goal.id,
-            name: goal.name,
-            targetAmount: goal.targetAmount || goal.amount || 0,
-            savedAmount: goal.savedAmount || 0
-          }));
+    <script>
+        function executeSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim() !== "") {
+                document.getElementById('resultsContainer').style.display = 'block';
+            }
         }
-      }
-    } catch (e) {
-      localStorage.removeItem('monevia_tx');
-      localStorage.removeItem('monevia_goals');
-    }
 
-    let currentType = 'expense';
-    let currentTopUpGoalId = null;
-    const tabList = ['home', 'target', 'ai', 'edu'];
-    let newsLoaded = false;
-
-    function formatRupiah(num) { return 'Rp ' + (Number(num) || 0).toLocaleString('id-ID'); }
-
-    function formatInputRupiah(element) {
-      let value = element.value.replace(/[^0-9]/g, '');
-      element.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
-    }
-
-    function getCurrentDayStr() {
-      const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-      return days[new Date().getDay()];
-    }
-
-    function switchTab(activeTab) {
-      tabList.forEach(t => {
-        let page = document.getElementById('page-' + t);
-        let nav = document.getElementById('nav-' + t);
-        if(page && nav) {
-          page.style.display = (t === activeTab) ? 'block' : 'none';
-          nav.classList.toggle('active', t === activeTab);
-        }
-      });
-      let activePage = document.getElementById('page-' + activeTab);
-      if(activePage) activePage.scrollTop = 0;
-
-      if(activeTab === 'edu' && !newsLoaded) { fetchNewsAPI(false); }
-    }
-
-    // FUNGSI API BERITA (Dilengkapi sistem Refresh manual)
-    async function fetchNewsAPI(forceRefresh) {
-      const newsContainer = document.getElementById('news-container');
-      if(forceRefresh) {
-        newsContainer.innerHTML = '<div class="loading-pulse">Memperbarui berita...</div>';
-      }
-
-      const rssUrl = 'https://www.cnbcindonesia.com/market/rss';
-      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-
-      try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        if (data.status === 'ok' && data.items.length > 0) {
-          let newsHtml = '';
-          data.items.slice(0, 5).forEach((item, index) => {
-            let badge = index === 0 ? '<span style="background-color: #f43f5e; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; display: inline-block;">TERBARU 🔥</span>' : '';
-            newsHtml += `
-              <a href="${item.link}" target="_blank" style="text-decoration: none; display: block; background-color: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">
-                ${badge}
-                <h3 style="color: white; font-size: 15px; margin: 0 0 6px 0; line-height: 1.4;">${item.title}</h3>
-                <span style="color: #34d399; font-size: 12px;">Buka Artikel &rarr;</span>
-              </a>
-            `;
-          });
-          newsContainer.innerHTML = newsHtml;
-          newsLoaded = true;
-        } else {
-          newsContainer.innerHTML = '<div style="color: #cbd5e1; font-size: 13px; text-align:center;">Gagal memuat berita.</div>';
-        }
-      } catch (error) {
-        newsContainer.innerHTML = '<div style="color: #f43f5e; font-size: 13px; text-align:center;">Koneksi internet terputus. Pastikan internet Anda stabil.</div>';
-      }
-    }
-
-    // Modal Transaksi
-    function openModal() { 
-      document.getElementById('form-day').value = getCurrentDayStr();
-      document.getElementById('tx-modal').style.display = 'flex'; 
-    }
-    function closeModal() { document.getElementById('tx-modal').style.display = 'none'; }
-    
-    // Modal Target Baru
-    function openGoalModal() { document.getElementById('goal-modal').style.display = 'flex'; }
-    function closeGoalModal() { document.getElementById('goal-modal').style.display = 'none'; }
-
-    // Modal Top Up Target
-    function openTopUpModal(goalId) {
-      currentTopUpGoalId = goalId;
-      document.getElementById('form-topup-amount').value = '';
-      document.getElementById('topup-modal').style.display = 'flex';
-    }
-    function closeTopUpModal() {
-      currentTopUpGoalId = null;
-      document.getElementById('topup-modal').style.display = 'none';
-    }
-
-    function setType(type) {
-      currentType = type;
-      document.getElementById('toggle-exp').classList.toggle('active-exp', type === 'expense');
-      document.getElementById('toggle-inc').classList.toggle('active-inc', type === 'income');
-    }
-
-    function addQuick(inputId, val) {
-      let input = document.getElementById(inputId);
-      let currentVal = Number(input.value.replace(/[^0-9]/g, '')) || 0;
-      input.value = (currentVal + val).toLocaleString('id-ID');
-    }
-
-    // FUNGSI SIMPAN TARGET BARU
-    function saveGoal() {
-      let name = document.getElementById('form-goal-name').value;
-      let rawAmount = document.getElementById('form-goal-amount').value.replace(/[^0-9]/g, '');
-      let targetAmount = Number(rawAmount);
-
-      if (!name || !targetAmount || targetAmount <= 0) {
-        return showMsg('Nama dan Nominal target wajib diisi dengan benar!');
-      }
-
-      goals.push({ id: Date.now(), name: name, targetAmount: targetAmount, savedAmount: 0 });
-      localStorage.setItem('monevia_goals', JSON.stringify(goals));
-      
-      document.getElementById('form-goal-name').value = '';
-      document.getElementById('form-goal-amount').value = '';
-      closeGoalModal();
-      updateDashboard();
-    }
-
-    // FUNGSI HAPUS TARGET
-    function deleteGoal(id) {
-      showConfirm('Apakah Anda yakin ingin menghapus target tabungan ini? Uang yang sudah masuk ke target ini akan tetap tercatat sebagai pengeluaran di riwayat.', () => {
-        goals = goals.filter(g => g.id !== id);
-        localStorage.setItem('monevia_goals', JSON.stringify(goals));
-        updateDashboard();
-      });
-    }
-
-    // FUNGSI TOP UP TARGET (Menambah Saldo ke Target)
-    function saveTopUp() {
-      let rawAmount = document.getElementById('form-topup-amount').value.replace(/[^0-9]/g, '');
-      let amount = Number(rawAmount);
-
-      if (!amount || amount <= 0) return showMsg('Masukkan nominal tabungan yang valid!');
-      
-      let goalIndex = goals.findIndex(g => g.id === currentTopUpGoalId);
-      if (goalIndex === -1) return showMsg('Target tidak ditemukan!');
-
-      let targetName = goals[goalIndex].name;
-      
-      // 1. Tambah saldo ke target
-      goals[goalIndex].savedAmount += amount;
-      localStorage.setItem('monevia_goals', JSON.stringify(goals));
-
-      // 2. Tambah transaksi otomatis (sebagai pengeluaran memotong saldo utama)
-      transactions.unshift({ 
-        type: 'expense', 
-        amount: amount, 
-        day: getCurrentDayStr(), 
-        note: `Tabungan: ${targetName}` 
-      });
-      localStorage.setItem('monevia_tx', JSON.stringify(transactions));
-
-      closeTopUpModal();
-      updateDashboard();
-    }
-
-    // FUNGSI SIMPAN TRANSAKSI UTAMA
-    function saveTransaction() {
-      let inputField = document.getElementById('form-amount');
-      let rawAmount = inputField.value.replace(/[^0-9]/g, '');
-      let amount = Number(rawAmount);
-      let day = document.getElementById('form-day').value;
-      let note = document.getElementById('form-note').value || 'Umum';
-
-      if (!amount || amount <= 0) return showMsg('Masukkan nominal yang valid!');
-
-      transactions.unshift({ type: currentType, amount: amount, day: day, note: note });
-      localStorage.setItem('monevia_tx', JSON.stringify(transactions));
-      
-      inputField.value = '';
-      document.getElementById('form-note').value = '';
-      closeModal();
-      updateDashboard();
-    }
-
-    // FUNGSI UPDATE TAMPILAN DASHBOARD
-    function updateDashboard() {
-      let inc = 0, exp = 0;
-      let dayMap = { Sen: 0, Sel: 0, Rab: 0, Kam: 0, Jum: 0, Sab: 0, Min: 0 };
-      let bocorCategory = {};
-
-      transactions.forEach(t => {
-        if (t.type === 'income') {
-          inc += t.amount;
-          dayMap[t.day] += t.amount;
-        } else {
-          exp += t.amount;
-          if(dayMap[t.day] !== undefined) dayMap[t.day] -= t.amount;
-          // Filter out 'Tabungan' notes from bocor analysis
-          if(!t.note.startsWith('Tabungan:')) {
-             bocorCategory[t.note] = (bocorCategory[t.note] || 0) + t.amount;
-          }
-        }
-      });
-
-      let bal = inc - exp;
-
-      // Update Saldo Utama
-      document.getElementById('display-balance').innerText = formatRupiah(bal);
-      document.getElementById('display-income').innerText = formatRupiah(inc);
-      document.getElementById('display-expense').innerText = formatRupiah(exp);
-
-      // Render Riwayat Transaksi
-      let listHtml = '';
-      if (transactions.length === 0) {
-        listHtml = '<div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada catatan transaksi masuk.</div>';
-      } else {
-        transactions.forEach(t => {
-          let sign = t.type === 'income' ? '+' : '-';
-          let color = t.type === 'income' ? '#34d399' : '#f43f5e';
-          listHtml += `<div class="tx-row"><div><strong>${t.note}</strong><div style="font-size:11px;color:#64748b;margin-top:2px;">Hari ${t.day}</div></div><div style="font-weight:bold;color:${color}">${sign}${formatRupiah(t.amount)}</div></div>`;
+        // Jalankan pencarian jika menekan tombol Enter di input
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                executeSearch();
+            }
         });
-      }
-      document.getElementById('tx-list-container').innerHTML = listHtml;
+    </script>
 
-      // Render Grafik X-Y
-      let chartHtml = '';
-      let maxVal = Math.max(...Object.values(dayMap).map(Math.abs), 1);
-      Object.keys(dayMap).forEach(d => {
-        let val = dayMap[d];
-        let heightPct = Math.min(Math.abs(val) / maxVal * 80, 80) + 10;
-        let barColor = val >= 0 ? '#34d399' : '#f43f5e';
-        if(val === 0) { heightPct = 10; barColor = '#1e293b'; }
-        chartHtml += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;"><div style="width:100%;max-width:14px;height:${heightPct}%;background-color:${barColor};border-radius:4px;"></div><span style="font-size:10px;color:#64748b;margin-top:4px;">${d}</span></div>`;
-      });
-      document.getElementById('chart-container').innerHTML = chartHtml;
-
-      // RENDER LIST TARGET DINAMIS (Berdasarkan savedAmount masing-masing)
-      let goalsHtml = '';
-      if (goals.length === 0) {
-        goalsHtml = '<div style="text-align: center; color: #475569; padding: 20px; font-size: 13px;">Belum ada target. Yuk mulai menabung!</div>';
-      } else {
-        goals.forEach(g => {
-          let progress = Math.min((g.savedAmount / g.targetAmount) * 100, 100);
-          
-          goalsHtml += `
-            <div class="section-card" style="position: relative;">
-              <button onclick="deleteGoal(${g.id})" style="position: absolute; top: 16px; right: 16px; background: rgba(244,63,94,0.1); border: none; color: #f43f5e; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold;">Hapus</button>
-              
-              <h3 style="margin: 0 0 12px 0; font-size: 16px; padding-right: 50px;">${g.name}</h3>
-              
-              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8;">
-                <span style="color: #34d399; font-weight: bold;">Terkumpul: ${formatRupiah(g.savedAmount)}</span>
-                <span>Target: ${formatRupiah(g.targetAmount)}</span>
-              </div>
-              
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progress}%"></div></div>
-              <div style="text-align: right; font-size: 10px; color: #cbd5e1; margin-top: 6px;">${progress.toFixed(1)}% Tercapai</div>
-              
-              ${progress < 100 ? `<button onclick="openTopUpModal(${g.id})" style="background-color: #0f172a; color: #34d399; border: 1px solid rgba(52,211,153,0.3); padding: 8px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 14px; width: 100%;">+ Isi Tabungan</button>` : `<div style="text-align: center; color: #34d399; font-size: 12px; font-weight: bold; margin-top: 14px;">🎉 Target Tercapai!</div>`}
-            </div>
-          `;
-        });
-      }
-      document.getElementById('goals-list-container').innerHTML = goalsHtml;
-
-      // Update Logika AI Insight
-      let aiCard = document.getElementById('ai-status-card');
-      let aiText = document.getElementById('ai-status-text');
-      let aiTips = document.getElementById('ai-tips');
-
-      if (transactions.length === 0) {
-        aiCard.style.borderLeftColor = '#34d399';
-        aiText.innerText = 'Belum ada data transaksi.';
-      } else if (bal < 0) {
-        aiCard.style.borderLeftColor = '#f43f5e';
-        aiText.innerText = '⚠️ Defisit Kas!';
-        aiTips.innerText = 'Pengeluaran lebih besar dari pemasukan. Kurangi pengeluaran non-primer.';
-      } else {
-        aiCard.style.borderLeftColor = '#34d399';
-        let bocorKeys = Object.keys(bocorCategory);
-        if(bocorKeys.length > 0) {
-          let topBocor = bocorKeys.reduce((a, b) => bocorCategory[a] > bocorCategory[b] ? a : b);
-          aiText.innerText = `✅ Kas Sehat: ${formatRupiah(bal)}`;
-          aiTips.innerText = `Pengeluaran terbesar di luar tabungan Anda ada di catatan "${topBocor}". Pertahankan kas positif ini!`;
-        } else {
-          aiText.innerText = `✅ Kas Sehat: ${formatRupiah(bal)}`;
-          aiTips.innerText = `Pemasukan Anda lancar, ayo alokasikan ke Target Tabungan!`;
-        }
-      }
-    }
-
-    // Render Awal
-    updateDashboard();
-  </script>
 </body>
 </html>
