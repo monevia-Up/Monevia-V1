@@ -1,216 +1,256 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catatan Keuangan Harian</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cute Throne Notes - Planning & Calendar</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka untuk tampilan imut & Playfair/Cinzel style -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Fredoka', 'sans-serif'],
+          },
+          colors: {
+            got: {
+              stark: '#94a3b8',
+              targaryen: '#f43f5e',
+              lannister: '#fbbf24',
+              night: '#0f172a',
+              card: '#1e293b',
+              pastelRed: '#fda4af',
+              pastelGold: '#fef08a'
+            }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 font-sans">
+<body class="bg-got-night text-slate-100 min-h-screen font-sans p-4 md:p-8">
 
-  <div class="max-w-2xl mx-auto space-y-6">
-    
-    <!-- Header -->
-    <div class="text-center space-y-1">
-      <h1 class="text-2xl font-bold text-white">Dompet Harian</h1>
-      <p class="text-xs text-slate-400">Pemasukan, Pengeluaran, Tabungan & Investasi</p>
-    </div>
+  <div class="max-w-4xl mx-auto space-y-6">
 
-    <!-- Ringkasan Saldo -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-      <div class="text-center pb-4 border-b border-slate-800">
-        <p class="text-xs text-slate-400 uppercase tracking-wider font-medium">Sisa Uang / Total Saldo</p>
-        <h2 id="total-saldo" class="text-3xl font-extrabold text-white mt-1">Rp 0</h2>
+    <!-- Header Lucu -->
+    <header class="text-center bg-got-card border-4 border-slate-700 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+      <div class="absolute -top-2 -left-2 text-3xl">🐉</div>
+      <div class="absolute -top-2 -right-2 text-3xl">🐺</div>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-amber-300 tracking-wide flex items-center justify-center gap-2">
+        👑 Cute Throne Notes ⚔️
+      </h1>
+      <p class="text-xs md:text-sm text-slate-400 mt-1">"Winter is Coming...! ✨"</p>
+    </header>
+
+    <!-- Layout Utama: Kalender & Planning -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+      <!-- Kolom Kiri: Kalender Lucu GoT (5 Cols) -->
+      <div class="md:col-span-5 bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-4">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-700">
+          <button onclick="changeMonth(-1)" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-lg font-bold">◄</button>
+          <h2 id="calendar-month" class="font-bold text-amber-300 text-sm md:text-base">Juli 2026</h2>
+          <button onclick="changeMonth(1)" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-lg font-bold">►</button>
+        </div>
+
+        <!-- Hari dalam Seminggu -->
+        <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-slate-400">
+          <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+        </div>
+
+        <!-- Grid Tanggal -->
+        <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center text-xs">
+          <!-- Di-render oleh JavaScript -->
+        </div>
+
+        <div class="bg-slate-900/60 p-3 rounded-2xl border border-slate-800 text-center">
+          <p class="text-xs text-rose-300 font-medium" id="selected-date-text">📅 Klik tanggal untuk melihat/membuat plan!</p>
+        </div>
       </div>
 
-      <!-- Detail Kategori (Pemasukan, Pengeluaran, Tabungan, Investasi) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <p class="text-[11px] text-slate-400">Pemasukan</p>
-          <p id="total-pemasukan" class="text-sm font-bold text-emerald-400 mt-0.5">Rp 0</p>
+      <!-- Kolom Kanan: Planning & Quest/To-Do (7 Cols) -->
+      <div class="md:col-span-7 space-y-6">
+
+        <!-- Form Input Plan Baru (Quest) -->
+        <div class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-3">
+          <h3 class="font-bold text-slate-200 text-sm flex items-center gap-2">
+            🛡️ Tambah Misi / Planning Baru
+          </h3>
+          <form id="form-plan" class="space-y-3">
+            <div class="flex gap-2">
+              <input type="text" id="input-plan" placeholder="Contoh: Taklukkan Tugas Sosiologi... 🔥" required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 text-white">
+              <select id="select-house" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white">
+                <option value="🐺 Stark">🐺 Stark</option>
+                <option value="🐉 Targaryen">🐉 Targaryen</option>
+                <option value="🦁 Lannister">🦁 Lannister</option>
+              </select>
+            </div>
+            <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs transition">
+              + Rebut Tahta (Simpan Plan)
+            </button>
+          </form>
         </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <p class="text-[11px] text-slate-400">Pengeluaran</p>
-          <p id="total-pengeluaran" class="text-sm font-bold text-rose-400 mt-0.5">Rp 0</p>
+
+        <!-- Daftar Planning untuk Tanggal Terpilih -->
+        <div class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <h3 class="font-bold text-amber-300 text-xs md:text-sm">⚔️ Daftar Misi Hari Ini</h3>
+            <span id="plan-count" class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full">0 Misi</span>
+          </div>
+
+          <div id="plan-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+            <!-- Items di-render via JS -->
+          </div>
         </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <p class="text-[11px] text-slate-400">Tabungan</p>
-          <p id="total-tabungan" class="text-sm font-bold text-blue-400 mt-0.5">Rp 0</p>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <p class="text-[11px] text-slate-400">Investasi</p>
-          <p id="total-investasi" class="text-sm font-bold text-purple-400 mt-0.5">Rp 0</p>
-        </div>
+
       </div>
+
     </div>
 
-    <!-- Form Input Transaksi -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-      <h3 class="font-semibold text-sm text-slate-200">Tambah Transaksi Baru</h3>
-      
-      <form id="form-transaksi" class="space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Jenis Transaksi</label>
-            <select id="jenis" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
-              <option value="pemasukan">🟢 Pemasukan (Gaji / Uang Saku)</option>
-              <option value="pengeluaran">🔴 Pengeluaran / Jajan Harian</option>
-              <option value="tabungan">🔵 Masuk Tabungan</option>
-              <option value="investasi">🟣 Masuk Investasi</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Jumlah Uang (Rp)</label>
-            <input type="number" id="jumlah" placeholder="Contoh: 50000" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Keterangan / Catatan</label>
-          <input type="text" id="catatan" placeholder="Contoh: Beli Makan Siang / Sisihan Tabungan" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
-        </div>
-
-        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition">
-          Simpan Catatan
+    <!-- Catatan Rahasia (Scrolls of Wisdom) -->
+    <div class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-3">
+      <h3 class="font-bold text-rose-400 text-sm flex items-center gap-2">
+        📜 Gulungan Catatan Bebas (Quick Notes)
+      </h3>
+      <textarea id="quick-notes" rows="4" placeholder="Tulis ide strategi, draf novel, atau catatan penting lainnya di sini..." class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3 text-xs text-slate-200 focus:outline-none focus:border-rose-400"></textarea>
+      <div class="text-right">
+        <button onclick="saveNotes()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs transition">
+          💾 Simpan Gulungan
         </button>
-      </form>
-    </div>
-
-    <!-- Tabel Riwayat Transaksi -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-      <div class="flex justify-between items-center">
-        <h3 class="font-semibold text-sm text-slate-200">Riwayat Transaksi</h3>
-        <button onclick="resetSemuaData()" class="text-xs text-rose-400 hover:underline">Hapus Semua Data</button>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="text-xs text-slate-400 border-b border-slate-800 uppercase bg-slate-950">
-            <tr>
-              <th class="p-3">Jenis</th>
-              <th class="p-3">Keterangan</th>
-              <th class="p-3 text-right">Jumlah</th>
-              <th class="p-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="tabel-riwayat" class="divide-y divide-slate-800 text-slate-300">
-            <!-- Data dirender otomatis oleh JS -->
-          </tbody>
-        </table>
       </div>
     </div>
 
   </div>
 
   <script>
-    // Ambil data Simpanan dari LocalStorage (jika ada)
-    let dataTransaksi = JSON.parse(localStorage.getItem('dompet_harian')) || [];
+    // State Aplikasi
+    let currentDate = new Date();
+    let selectedDateStr = new Date().toISOString().split('T')[0];
+    let plans = JSON.parse(localStorage.getItem('got_plans')) || {};
+    let notes = localStorage.getItem('got_quick_notes') || '';
 
-    // Helper Format Rupiah
-    function formatRupiah(angka) {
-      return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
-    }
+    const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-    // Fungsi Utama Update Tampilan & Hitungan
-    function updateTampilan() {
-      // Hitung total masing-masing
-      let totalPemasukan = 0;
-      let totalPengeluaran = 0;
-      let totalTabungan = 0;
-      let totalInvestasi = 0;
+    // Render Kalender
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
 
-      dataTransaksi.forEach(item => {
-        if (item.jenis === 'pemasukan') totalPemasukan += item.jumlah;
-        if (item.jenis === 'pengeluaran') totalPengeluaran += item.jumlah;
-        if (item.jenis === 'tabungan') totalTabungan += item.jumlah;
-        if (item.jenis === 'investasi') totalInvestasi += item.jumlah;
-      });
+      document.getElementById('calendar-month').innerText = `${namaBulan[month]} ${year}`;
 
-      // Sisa Saldo Bebas = Pemasukan - (Pengeluaran + Tabungan + Investasi)
-      const sisaSaldo = totalPemasukan - (totalPengeluaran + totalTabungan + totalInvestasi);
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Tampilkan ke layar
-      document.getElementById('total-saldo').innerText = formatRupiah(sisaSaldo);
-      document.getElementById('total-pemasukan').innerText = formatRupiah(totalPemasukan);
-      document.getElementById('total-pengeluaran').innerText = formatRupiah(totalPengeluaran);
-      document.getElementById('total-tabungan').innerText = formatRupiah(totalTabungan);
-      document.getElementById('total-investasi').innerText = formatRupiah(totalInvestasi);
+      const daysContainer = document.getElementById('calendar-days');
+      daysContainer.innerHTML = '';
 
-      // Render Tabel
-      const tbody = document.getElementById('tabel-riwayat');
-      tbody.innerHTML = '';
-
-      if (dataTransaksi.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-500 italic">Belum ada catatan transaksi.</td></tr>`;
-      } else {
-        dataTransaksi.forEach((item, index) => {
-          let labelBadge = '';
-          let warnaUang = '';
-
-          if (item.jenis === 'pemasukan') {
-            labelBadge = '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-2 py-0.5 rounded-full">Pemasukan</span>';
-            warnaUang = 'text-emerald-400';
-          } else if (item.jenis === 'pengeluaran') {
-            labelBadge = '<span class="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs px-2 py-0.5 rounded-full">Pengeluaran</span>';
-            warnaUang = 'text-rose-400';
-          } else if (item.jenis === 'tabungan') {
-            labelBadge = '<span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs px-2 py-0.5 rounded-full">Tabungan</span>';
-            warnaUang = 'text-blue-400';
-          } else if (item.jenis === 'investasi') {
-            labelBadge = '<span class="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs px-2 py-0.5 rounded-full">Investasi</span>';
-            warnaUang = 'text-purple-400';
-          }
-
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/30">
-              <td class="p-3">${labelBadge}</td>
-              <td class="p-3 font-medium text-slate-200">${item.catatan}</td>
-              <td class="p-3 text-right font-bold ${warnaUang}">${formatRupiah(item.jumlah)}</td>
-              <td class="p-3 text-center">
-                <button onclick="hapusSatuItem(${index})" class="text-slate-500 hover:text-rose-400 font-bold px-2">✕</button>
-              </td>
-            </tr>
-          `;
-        });
+      // Blank slots
+      for (let i = 0; i < firstDay; i++) {
+        daysContainer.innerHTML += `<div></div>`;
       }
 
-      // Simpan ke memori lokal browser
-      localStorage.setItem('dompet_harian', JSON.stringify(dataTransaksi));
+      // Day slots
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isSelected = dateStr === selectedDateStr;
+        const hasPlan = plans[dateStr] && plans[dateStr].length > 0;
+
+        let bgClass = isSelected ? 'bg-amber-400 text-slate-950 font-bold' : 'hover:bg-slate-800 text-slate-300';
+        
+        daysContainer.innerHTML += `
+          <button onclick="selectDate('${dateStr}')" class="p-2 rounded-xl text-xs relative ${bgClass} transition">
+            ${day}
+            ${hasPlan && !isSelected ? '<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-rose-400 rounded-full"></span>' : ''}
+          </button>
+        `;
+      }
     }
 
-    // Handle Form Submit
-    document.getElementById('form-transaksi').addEventListener('submit', function(e) {
+    function changeMonth(delta) {
+      currentDate.setMonth(currentDate.getMonth() + delta);
+      renderCalendar();
+    }
+
+    function selectDate(dateStr) {
+      selectedDateStr = dateStr;
+      document.getElementById('selected-date-text').innerText = `📅 Tanggal Terpilih: ${dateStr}`;
+      renderCalendar();
+      renderPlans();
+    }
+
+    // Render Daftar Plan
+    function renderPlans() {
+      const planList = document.getElementById('plan-list');
+      const dayPlans = plans[selectedDateStr] || [];
+      document.getElementById('plan-count').innerText = `${dayPlans.length} Misi`;
+
+      planList.innerHTML = '';
+
+      if (dayPlans.length === 0) {
+        planList.innerHTML = `<p class="text-center text-xs text-slate-500 py-4 italic">Belum ada misi untuk tanggal ini 🛡️</p>`;
+        return;
+      }
+
+      dayPlans.forEach((plan, index) => {
+        planList.innerHTML += `
+          <div class="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" ${plan.done ? 'checked' : ''} onchange="togglePlan(${index})" class="accent-amber-400 w-4 h-4 rounded cursor-pointer">
+              <span class="${plan.done ? 'line-through text-slate-500' : 'text-slate-200'} font-medium">
+                <span class="text-[10px] opacity-75 mr-1">${plan.house}</span> ${plan.text}
+              </span>
+            </div>
+            <button onclick="deletePlan(${index})" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    // Form Event Listener
+    document.getElementById('form-plan').addEventListener('submit', function(e) {
       e.preventDefault();
+      const text = document.getElementById('input-plan').value;
+      const house = document.getElementById('select-house').value;
+
+      if (!plans[selectedDateStr]) plans[selectedDateStr] = [];
+      plans[selectedDateStr].push({ text, house, done: false });
+
+      localStorage.setItem('got_plans', JSON.stringify(plans));
+      document.getElementById('input-plan').value = '';
       
-      const jenis = document.getElementById('jenis').value;
-      const jumlah = parseFloat(document.getElementById('jumlah').value);
-      const catatan = document.getElementById('catatan').value;
-
-      dataTransaksi.unshift({ jenis, jumlah, catatan });
-      updateTampilan();
-
-      // Reset Input
-      document.getElementById('jumlah').value = '';
-      document.getElementById('catatan').value = '';
+      renderCalendar();
+      renderPlans();
     });
 
-    // Hapus 1 Transaksi
-    function hapusSatuItem(index) {
-      dataTransaksi.splice(index, 1);
-      updateTampilan();
+    function togglePlan(index) {
+      plans[selectedDateStr][index].done = !plans[selectedDateStr][index].done;
+      localStorage.setItem('got_plans', JSON.stringify(plans));
+      renderPlans();
     }
 
-    // Reset Semua Data
-    function resetSemuaData() {
-      if (confirm("Yakin ingin menghapus seluruh riwayat transaksi?")) {
-        dataTransaksi = [];
-        updateTampilan();
-      }
+    function deletePlan(index) {
+      plans[selectedDateStr].splice(index, 1);
+      localStorage.setItem('got_plans', JSON.stringify(plans));
+      renderCalendar();
+      renderPlans();
     }
 
-    // Jalankan pertama kali
-    updateTampilan();
+    // Quick Notes
+    function saveNotes() {
+      const val = document.getElementById('quick-notes').value;
+      localStorage.setItem('got_quick_notes', val);
+      alert('📜 Gulungan Catatan Berhasil Disimpan!');
+    }
+
+    // Init App
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('quick-notes').value = notes;
+      selectDate(selectedDateStr);
+    });
   </script>
 </body>
 </html>
