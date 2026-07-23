@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FinPlanner - Pencatat Keuangan & Bisnis</title>
+  <title>FinPlanner - Keuangan & Bisnis</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons CDN (Fixed Version) -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -62,7 +62,7 @@
       <div class="pt-6 border-t border-slate-800 text-xs text-slate-500">
         <p class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Sistem Siap Digunakan
+          Sistem Siap & Berfungsi
         </p>
       </div>
     </aside>
@@ -77,20 +77,18 @@
           <p class="text-slate-400 text-sm mt-0.5">Catat uang saku, pengeluaran jajan, hingga perencanaan modal bisnis.</p>
         </div>
         <div class="flex gap-3">
-          <button onclick="openModal('expense')" class="flex items-center gap-2 px-4 py-2.5 bg-rose-600/20 text-rose-400 border border-rose-500/30 rounded-xl hover:bg-rose-600/30 transition text-sm font-medium">
+          <button type="button" onclick="openModal('expense')" class="flex items-center gap-2 px-4 py-2.5 bg-rose-600/20 text-rose-400 border border-rose-500/30 rounded-xl hover:bg-rose-600/30 transition text-sm font-medium cursor-pointer">
             <i data-lucide="minus-circle" class="w-4 h-4"></i> Catat Jajan / Keluar
           </button>
-          <button onclick="openModal('income')" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl hover:bg-emerald-600/30 transition text-sm font-medium">
+          <button type="button" onclick="openModal('income')" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl hover:bg-emerald-600/30 transition text-sm font-medium cursor-pointer">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> Catat Pemasukan
           </button>
         </div>
       </header>
 
-      <!-- KPI Summary Cards (TOTAL SALDO DIBACA DARI PEMASUKAN - PENGELUARAN) -->
+      <!-- KPI Summary Cards -->
       <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        
-        <!-- Total Saldo Utang/Kas Saat Ini -->
-        <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl relative overflow-hidden">
+        <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl">
           <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Saldo Saat Ini</p>
           <h3 class="text-2xl font-bold text-white mt-2" id="val-balance">Rp 0</h3>
           <p class="text-xs text-brand-400 mt-2 flex items-center gap-1">
@@ -98,25 +96,22 @@
           </p>
         </div>
 
-        <!-- Total Uang Masuk -->
         <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl">
           <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Pemasukan</p>
           <h3 class="text-2xl font-bold text-emerald-400 mt-2" id="val-income">Rp 0</h3>
           <p class="text-xs text-slate-500 mt-2">Gaji, Uang Saku, Omset</p>
         </div>
 
-        <!-- Total Uang Keluar / Jajan -->
         <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl">
           <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Pengeluaran</p>
           <h3 class="text-2xl font-bold text-rose-400 mt-2" id="val-expense">Rp 0</h3>
           <p class="text-xs text-slate-500 mt-2">Jajan, Operasional, Belanja</p>
         </div>
 
-        <!-- Persentase Kehematan / Margin -->
         <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl">
           <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Rasio Sisa Kas</p>
           <h3 class="text-2xl font-bold text-brand-400 mt-2" id="val-margin">0%</h3>
-          <p class="text-xs text-slate-500 mt-2">Sisa Uang dari Pemasukan</p>
+          <p class="text-xs text-slate-500 mt-2">Persentase Hemat</p>
         </div>
       </section>
 
@@ -125,7 +120,7 @@
         <div class="lg:col-span-2 p-6 bg-slate-900/80 border border-slate-800 rounded-2xl">
           <div class="flex justify-between items-center mb-6">
             <h3 class="font-semibold text-slate-200">Grafik Arus Kas</h3>
-            <span class="text-xs text-slate-500">Perbandingan Masuk vs Keluar</span>
+            <span class="text-xs text-slate-500">Pemasukan vs Pengeluaran</span>
           </div>
           <div class="h-64">
             <canvas id="cashflowChart"></canvas>
@@ -146,7 +141,7 @@
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i data-lucide="target" class="w-5 h-5 text-brand-500"></i> Perencana Bisnis & Target Impas (BEP)
           </h3>
-          <p class="text-xs text-slate-400 mt-1">Gunakan kalkulator ini untuk merencanakan berapa unit produk yang harus terjual agar bisnis balik modal.</p>
+          <p class="text-xs text-slate-400 mt-1">Gunakan kalkulator ini untuk merencanakan berapa unit produk yang harus terjual agar balik modal.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -169,13 +164,13 @@
             <span class="text-xs text-slate-400">Target Penjualan Agar Balik Modal (BEP):</span>
             <p class="text-xl font-bold text-brand-400" id="bep-result">0 Unit / Rp 0</p>
           </div>
-          <button onclick="calculateBEP()" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl text-sm transition">
+          <button type="button" onclick="calculateBEP()" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl text-sm transition cursor-pointer">
             Hitung Proyeksi
           </button>
         </div>
       </section>
 
-      <!-- Dynamic Transaction Table -->
+      <!-- Transaction Table -->
       <section id="transactions" class="p-6 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="font-bold text-white">Riwayat Transaksi</h3>
@@ -209,7 +204,7 @@
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h3 id="modal-title" class="font-bold text-white">Tambah Catatan</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <form id="tx-form" class="space-y-4">
@@ -221,7 +216,6 @@
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Kategori</label>
           <select id="tx-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm focus:border-brand-500 outline-none text-slate-100">
-            <!-- Menyesuaikan kategori harian & bisnis -->
             <option value="Jajan & Makan">Jajan & Makan</option>
             <option value="Uang Saku / Gaji">Uang Saku / Gaji</option>
             <option value="Omset Bisnis">Omset Bisnis / Penjualan</option>
@@ -242,26 +236,35 @@
         </div>
 
         <div class="flex gap-3 pt-2">
-          <button type="button" onclick="closeModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-xl text-sm transition">Batal</button>
-          <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl text-sm transition">Simpan Data</button>
+          <button type="button" onclick="closeModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-xl text-sm transition cursor-pointer">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl text-sm transition cursor-pointer">Simpan Data</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // --- Array Data Mulai dari KOSONG (0) ---
-    let transactions = [];
+    // --- Memuat Data dari LocalStorage agar Tidak Hilang Saat Refresh ---
+    let transactions = JSON.parse(localStorage.getItem('finplanner_tx')) || [];
 
     // --- Helper Format Rupiah ---
     const formatIDR = (val) => "Rp " + new Intl.NumberFormat('id-ID').format(val);
 
+    // --- Helper Refresh Ikon Lucide ---
+    function refreshIcons() {
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+    }
+
     // --- Update Seluruh Tampilan Dashboard ---
     function updateDashboard() {
+      // Simpan data terbaru ke LocalStorage
+      localStorage.setItem('finplanner_tx', JSON.stringify(transactions));
+
       const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
       const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
       
-      // Total Saldo otomatis dihitung: Pemasukan - Pengeluaran
       const balance = totalIncome - totalExpense;
       const margin = totalIncome > 0 ? (((totalIncome - totalExpense) / totalIncome) * 100).toFixed(1) : 0;
 
@@ -284,7 +287,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="6" class="text-center py-8 text-slate-500 italic">
-              Belum ada catatan. Klik tombol <b>"Catat Pemasukan"</b> atau <b>"Catat Jajan / Keluar"</b> di atas untuk memulainya!
+              Belum ada catatan. Klik tombol <b>"Catat Pemasukan"</b> atau <b>"Catat Jajan / Keluar"</b> untuk menambah data.
             </td>
           </tr>
         `;
@@ -307,7 +310,7 @@
               ${isIncome ? '+' : '-'} ${formatIDR(t.amount)}
             </td>
             <td class="py-3.5 px-4 text-center">
-              <button onclick="deleteTransaction(${t.id})" class="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition" title="Hapus">
+              <button type="button" onclick="deleteTransaction(${t.id})" class="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition cursor-pointer" title="Hapus">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             </td>
@@ -315,7 +318,8 @@
         `;
         tbody.innerHTML += row;
       });
-      lucide.createIcons();
+      
+      refreshIcons();
     }
 
     // --- Hapus Transaksi ---
@@ -325,14 +329,15 @@
     }
 
     // --- Pengelolaan Grafik (Chart.js) ---
-    let cashflowChart, categoryChart;
+    let cashflowChart = null;
+    let categoryChart = null;
 
     function initCharts() {
       const ctx1 = document.getElementById('cashflowChart').getContext('2d');
       cashflowChart = new Chart(ctx1, {
         type: 'bar',
         data: {
-          labels: ['Total Pemasukan', 'Total Pengeluaran'],
+          labels: ['Pemasukan', 'Pengeluaran'],
           datasets: [{
             label: 'Nominal (Rp)',
             data: [0, 0],
@@ -379,13 +384,11 @@
       const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
       const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
 
-      // Update Bar Chart Arus Kas
       if (cashflowChart) {
         cashflowChart.data.datasets[0].data = [totalIncome, totalExpense];
         cashflowChart.update();
       }
 
-      // Update Pie Chart Kategori Pengeluaran
       if (categoryChart) {
         const expenses = transactions.filter(t => t.type === 'expense');
         const categories = {};
@@ -408,7 +411,7 @@
 
       const marginPerUnit = price - variable;
       if (marginPerUnit <= 0 || fixed <= 0) {
-        document.getElementById('bep-result').innerText = "Masukkan modal dan harga jual yang valid!";
+        document.getElementById('bep-result').innerText = "Harga jual harus lebih besar dari biaya bahan!";
         return;
       }
 
@@ -427,8 +430,3 @@
     }
 
     function closeModal() {
-      document.getElementById('tx-modal').classList.add('hidden');
-      document.getElementById('tx-form').reset();
-    }
-
-    
