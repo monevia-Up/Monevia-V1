@@ -1,278 +1,387 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full bg-slate-900 text-slate-100">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google - Pencarian Hari Pasca PM Pendamping</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinPlan AI - Dashboard Keuangan & Perencanaan Bisnis</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #ffffff;
-            color: #202124;
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
         }
-
-        /* Header / Navbar */
-        header {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 15px 30px;
-            gap: 15px;
-            font-size: 14px;
-        }
-
-        header a {
-            color: #000;
-            text-decoration: none;
-        }
-
-        header a:hover {
-            text-decoration: underline;
-        }
-
-        /* Container Utama */
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 80px;
-            flex-grow: 1;
-            padding: 0 20px;
-        }
-
-        /* Logo Google */
-        .logo {
-            font-size: 90px;
-            font-weight: bold;
-            letter-spacing: -3px;
-            margin-bottom: 20px;
-            user-select: none;
-        }
-
-        .logo span:nth-child(1) { color: #4285F4; }
-        .logo span:nth-child(2) { color: #EA4335; }
-        .logo span:nth-child(3) { color: #FBBC05; }
-        .logo span:nth-child(4) { color: #4285F4; }
-        .logo span:nth-child(5) { color: #34A853; }
-        .logo span:nth-child(6) { color: #EA4335; }
-
-        /* Box Pencarian */
-        .search-box {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 584px;
-            height: 46px;
-            border: 1px solid #dfe1e5;
-            border-radius: 24px;
-            padding: 0 15px;
-            box-shadow: none;
-            transition: box-shadow 0.2s;
-        }
-
-        .search-box:hover, .search-box:focus-within {
-            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-            border-color: rgba(223, 225, 229, 0);
-        }
-
-        .search-icon {
-            color: #9aa0a6;
-            margin-right: 10px;
-        }
-
-        .search-input {
-            flex-grow: 1;
-            border: none;
-            outline: none;
-            font-size: 16px;
-        }
-
-        /* Tombol */
-        .buttons {
-            margin-top: 30px;
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn {
-            background-color: #f8f9fa;
-            border: 1px solid #f8f9fa;
-            border-radius: 4px;
-            color: #3c4043;
-            font-size: 14px;
-            padding: 10px 16px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            border-color: #dadce0;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            color: #202124;
-        }
-
-        /* Bagian Hasil Pencarian */
-        .results-container {
-            width: 100%;
-            max-width: 650px;
-            margin-top: 40px;
-            display: none; /* Sembunyi secara default */
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-item {
-            margin-bottom: 25px;
-        }
-
-        .result-url {
-            font-size: 14px;
-            color: #202124;
-            margin-bottom: 4px;
-        }
-
-        .result-title {
-            font-size: 20px;
-            color: #1a0dab;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-
-        .result-title:hover {
-            text-decoration: underline;
-        }
-
-        .result-snippet {
-            font-size: 14px;
-            color: #4d5156;
-            line-height: 1.5;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #f2f2f2;
-            color: #70757a;
-            font-size: 14px;
-            margin-top: auto;
-        }
-
-        .footer-location {
-            padding: 15px 30px;
-            border-bottom: 1px solid #dadce0;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 30px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links div {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            color: #70757a;
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body>
+<body class="h-full font-sans antialiased bg-slate-950 text-slate-100">
 
-    <header>
-        <a href="#">Gmail</a>
-        <a href="#">Gambar</a>
-    </header>
-
-    <div class="container">
-        <!-- Logo Google -->
-        <div class="logo">
-            <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+  <div class="min-h-full flex flex-col md:flex-row">
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
+      <div>
+        <div class="flex items-center gap-3 mb-8">
+          <div class="p-2 bg-brand-600 rounded-xl text-white">
+            <i data-lucide="wallet" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg text-white">FinPlan Pro</h1>
+            <p class="text-xs text-slate-400">Business & Finance</p>
+          </div>
         </div>
 
-        <!-- Box Input -->
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" id="searchInput" value="Hari Pasca PM Pendamping dilaksanakan Pada tanggal 22 juli">
+        <nav class="space-y-1">
+          <a href="#dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-brand-600/10 text-brand-500 font-medium border border-brand-500/20">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+          </a>
+          <a href="#transactions" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition">
+            <i data-lucide="arrow-right-left" class="w-5 h-5"></i> Transaksi Kas
+          </a>
+          <a href="#planner" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition">
+            <i data-lucide="calculator" class="w-5 h-5"></i> Perencanaan Bisnis
+          </a>
+        </nav>
+      </div>
+
+      <div class="pt-6 border-t border-slate-800 text-xs text-slate-500">
+        <p>Status Sistem: <span class="text-emerald-400">● Online</span></p>
+        <p class="mt-1">Mode Lokal (Client-Side)</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-10 space-y-8 overflow-y-auto">
+      
+      <!-- Top Bar / Header -->
+      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Ikhtisar Perencanaan & Analisis</h2>
+          <p class="text-slate-400 text-sm">Pantau aliran arus kas, proyeksi ROI, dan rasio efisiensi bisnis Anda.</p>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="openModal('expense')" class="flex items-center gap-2 px-4 py-2 bg-rose-600/20 text-rose-400 border border-rose-500/30 rounded-lg hover:bg-rose-600/30 transition text-sm font-medium">
+            <i data-lucide="minus-circle" class="w-4 h-4"></i> Catat Pengeluaran
+          </button>
+          <button onclick="openModal('income')" class="flex items-center gap-2 px-4 py-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-lg hover:bg-emerald-600/30 transition text-sm font-medium">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> Catat Pemasukan
+          </button>
+        </div>
+      </header>
+
+      <!-- KPI Summary Cards -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="p-5 bg-slate-900/60 border border-slate-800 rounded-2xl relative overflow-hidden">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Kas Bersih</p>
+          <h3 class="text-2xl font-bold text-white mt-2" id="val-balance">Rp 0</h3>
+          <p class="text-xs text-emerald-400 mt-2 flex items-center gap-1">
+            <i data-lucide="trending-up" class="w-3 h-3"></i> Real-time Balance
+          </p>
         </div>
 
-        <!-- Tombol Pencarian -->
-        <div class="buttons">
-            <button class="btn" onclick="executeSearch()">Penelusuran Google</button>
-            <button class="btn">Saya Lagi Beruntung</button>
+        <div class="p-5 bg-slate-900/60 border border-slate-800 rounded-2xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Pemasukan</p>
+          <h3 class="text-2xl font-bold text-emerald-400 mt-2" id="val-income">Rp 0</h3>
+          <p class="text-xs text-slate-500 mt-2">Omset & Operasional</p>
         </div>
 
-        <!-- Hasil Pencarian -->
-        <div class="results-container" id="resultsContainer">
-            <div class="result-item">
-                <div class="result-url">https://www.kegiatan-pendamping.id › informasi › pasca-pm</div>
-                <a href="#" class="result-title">Hari Pasca PM Pendamping - Pelaksanaan Tanggal 22 Juli</a>
-                <div class="result-snippet">
-                    <strong>22 Juli:</strong> Pelaksanaan kegiatan Hari Pasca PM (Penilaian/Pendampingan) Pendamping dijadwalkan secara resmi pada tanggal 22 Juli. Agenda ini mencakup evaluasi program, peninjauan hasil pendampingan lapangan, serta koordinasi lanjutan antar unit pendamping.
-                </div>
-            </div>
-
-            <div class="result-item">
-                <div class="result-url">https://www.jadwal-kegiatan.org › agenda › juli</div>
-                <a href="#" class="result-title">Jadwal Agenda & Evaluasi Pasca PM Pendamping</a>
-                <div class="result-snippet">
-                    Informasi lengkap mengenai alur dan tahapan Pasca PM Pendamping yang diselenggarakan pada 22 Juli. Pastikan seluruh berkas laporan evaluasi telah diunggah sebelum tanggal pelaksanaan.
-                </div>
-            </div>
+        <div class="p-5 bg-slate-900/60 border border-slate-800 rounded-2xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Pengeluaran</p>
+          <h3 class="text-2xl font-bold text-rose-400 mt-2" id="val-expense">Rp 0</h3>
+          <p class="text-xs text-slate-500 mt-2">Beban Operasional & HPP</p>
         </div>
+
+        <div class="p-5 bg-slate-900/60 border border-slate-800 rounded-2xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Margin Keuntungan</p>
+          <h3 class="text-2xl font-bold text-brand-500 mt-2" id="val-margin">0%</h3>
+          <p class="text-xs text-slate-500 mt-2">Net Profit Ratio</p>
+        </div>
+      </section>
+
+      <!-- Visual Chart Analytics -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 p-6 bg-slate-900/60 border border-slate-800 rounded-2xl">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="font-semibold text-slate-200">Arus Kas (Cash Flow Trend)</h3>
+            <span class="text-xs text-slate-500">Visualisasi 6 Bulan Terakhir</span>
+          </div>
+          <div class="h-64">
+            <canvas id="cashflowChart"></canvas>
+          </div>
+        </div>
+
+        <div class="p-6 bg-slate-900/60 border border-slate-800 rounded-2xl">
+          <h3 class="font-semibold text-slate-200 mb-6">Distribusi Pengeluaran</h3>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Business Planner / BEP Calculator Section -->
+      <section id="planner" class="p-6 bg-slate-900/60 border border-slate-800 rounded-2xl space-y-6">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="target" class="w-5 h-5 text-brand-500"></i> Perencana Bisnis & Kalkulator BEP (Break-Even Point)
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Hitung berapa unit produk yang harus dijual untuk mencapai titik impas modal bisnis Anda.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Biaya Tetap / Operasional (Rp)</label>
+            <input type="number" id="bep-fixed" value="10000000" placeholder="Contoh: Sewa, Gaji" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Harga Jual per Unit (Rp)</label>
+            <input type="number" id="bep-price" value="50000" placeholder="Harga produk" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Biaya Variabel per Unit (Rp)</label>
+            <input type="number" id="bep-var" value="30000" placeholder="HPP / Bahan baku" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none">
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950/80 border border-slate-800 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div>
+            <span class="text-xs text-slate-400">Target Penjualan Impas (BEP):</span>
+            <p class="text-xl font-bold text-brand-500" id="bep-result">0 Unit / Rp 0</p>
+          </div>
+          <button onclick="calculateBEP()" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition">
+            Hitung Proyeksi
+          </button>
+        </div>
+      </section>
+
+      <!-- Transaction Table -->
+      <section id="transactions" class="p-6 bg-slate-900/60 border border-slate-800 rounded-2xl space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-white">Riwayat Transaksi Terakhir</h3>
+          <span id="tx-count" class="text-xs bg-slate-800 px-2.5 py-1 rounded-full text-slate-400">0 Data</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 text-xs uppercase border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Tanggal</th>
+                <th class="py-3 px-4">Kategori</th>
+                <th class="py-3 px-4">Keterangan</th>
+                <th class="py-3 px-4">Tipe</th>
+                <th class="py-3 px-4 text-right">Jumlah</th>
+              </tr>
+            </thead>
+            <tbody id="transaction-table" class="divide-y divide-slate-800/50">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal Input Transaksi -->
+  <div id="tx-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 id="modal-title" class="font-bold text-white">Tambah Transaksi</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="tx-form" class="space-y-4">
+        <input type="hidden" id="tx-type">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Tanggal</label>
+          <input type="date" id="tx-date" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Kategori</label>
+          <select id="tx-category" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none text-slate-100">
+            <option value="Penjualan">Penjualan / Omset</option>
+            <option value="Investasi">Injeksi Modal</option>
+            <option value="Operasional">Operasional Bisnis</option>
+            <option value="Pemasaran">Iklan & Pemasaran</option>
+            <option value="Gaji">Gaji / Tim</option>
+            <option value="Lainnya">Lain-lain</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Keterangan / Catatan</label>
+          <input type="text" id="tx-desc" placeholder="Contoh: Project Website Client X" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Jumlah (Rp)</label>
+          <input type="number" id="tx-amount" placeholder="0" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm focus:border-brand-500 outline-none">
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-lg text-sm transition">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition">Simpan Data</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <footer>
-        <div class="footer-location">Indonesia</div>
-        <div class="footer-links">
-            <div>
-                <a href="#">Tentang</a>
-                <a href="#">Periklanan</a>
-                <a href="#">Bisnis</a>
-                <a href="#">Cara kerja Penelusuran</a>
-            </div>
-            <div>
-                <a href="#">Privasi</a>
-                <a href="#">Persyaratan</a>
-                <a href="#">Setelan</a>
-            </div>
-        </div>
-    </footer>
+  <script>
+    // --- Initial State Data ---
+    let transactions = [
+      { id: 1, date: '2026-07-20', category: 'Penjualan', desc: 'Project Dashboard Client', amount: 15000000, type: 'income' },
+      { id: 2, date: '2026-07-21', category: 'Operasional', desc: 'Sewa Server & Domain', amount: 1200000, type: 'expense' },
+      { id: 3, date: '2026-07-22', category: 'Pemasaran', desc: 'Kampanye Facebook Ads', amount: 2500000, type: 'expense' }
+    ];
 
-    <script>
-        function executeSearch() {
-            const query = document.getElementById('searchInput').value;
-            if (query.trim() !== "") {
-                document.getElementById('resultsContainer').style.display = 'block';
-            }
-        }
+    // --- Format Helper ---
+    const formatIDR = (val) => "Rp " + new Intl.NumberFormat('id-ID').format(val);
 
-        // Jalankan pencarian jika menekan tombol Enter di input
-        document.getElementById('searchInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                executeSearch();
-            }
-        });
-    </script>
+    // --- Render Core Dashboard Data ---
+    function updateDashboard() {
+      const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+      const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+      const balance = totalIncome - totalExpense;
+      const margin = totalIncome > 0 ? (((totalIncome - totalExpense) / totalIncome) * 100).toFixed(1) : 0;
 
+      document.getElementById('val-balance').innerText = formatIDR(balance);
+      document.getElementById('val-income').innerText = formatIDR(totalIncome);
+      document.getElementById('val-expense').innerText = formatIDR(totalExpense);
+      document.getElementById('val-margin').innerText = `${margin}%`;
+
+      renderTable();
+      updateCharts(totalIncome, totalExpense);
+    }
+
+    // --- Render Transactions Table ---
+    function renderTable() {
+      const tbody = document.getElementById('transaction-table');
+      document.getElementById('tx-count').innerText = `${transactions.length} Data`;
+      tbody.innerHTML = '';
+
+      transactions.forEach(t => {
+        const isIncome = t.type === 'income';
+        const row = `
+          <tr class="hover:bg-slate-800/30 transition">
+            <td class="py-3 px-4 text-slate-400">${t.date}</td>
+            <td class="py-3 px-4 font-medium">${t.category}</td>
+            <td class="py-3 px-4 text-slate-400">${t.desc}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-1 rounded text-xs font-semibold ${isIncome ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
+                ${isIncome ? 'Masuk' : 'Keluar'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-bold ${isIncome ? 'text-emerald-400' : 'text-rose-400'}">
+              ${isIncome ? '+' : '-'} ${formatIDR(t.amount)}
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // --- Chart Logic ---
+    let cashflowChart, categoryChart;
+
+    function initCharts() {
+      const ctx1 = document.getElementById('cashflowChart').getContext('2d');
+      cashflowChart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: ['Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt'],
+          datasets: [
+            { label: 'Pemasukan', data: [12000000, 18000000, 15000000, 0, 0, 0], borderColor: '#34d399', tension: 0.3 },
+            { label: 'Pengeluaran', data: [5000000, 7000000, 3700000, 0, 0, 0], borderColor: '#f87171', tension: 0.3 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+      });
+
+      const ctx2 = document.getElementById('categoryChart').getContext('2d');
+      categoryChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Operasional', 'Pemasaran', 'Gaji'],
+          datasets: [{ data: [1200000, 2500000, 0], backgroundColor: ['#3b82f6', '#f43f5e', '#eab308'] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+      });
+    }
+
+    function updateCharts(income, expense) {
+      if (cashflowChart) {
+        cashflowChart.data.datasets[0].data[2] = income;
+        cashflowChart.data.datasets[1].data[2] = expense;
+        cashflowChart.update();
+      }
+    }
+
+    // --- BEP Planner Logic ---
+    function calculateBEP() {
+      const fixed = parseFloat(document.getElementById('bep-fixed').value) || 0;
+      const price = parseFloat(document.getElementById('bep-price').value) || 0;
+      const variable = parseFloat(document.getElementById('bep-var').value) || 0;
+
+      const marginPerUnit = price - variable;
+      if (marginPerUnit <= 0) {
+        document.getElementById('bep-result').innerText = "Harga jual harus lebih tinggi dari biaya variabel!";
+        return;
+      }
+
+      const bepUnit = Math.ceil(fixed / marginPerUnit);
+      const bepRupiah = bepUnit * price;
+
+      document.getElementById('bep-result').innerText = `${bepUnit} Unit (${formatIDR(bepRupiah)})`;
+    }
+
+    // --- Modal Control ---
+    function openModal(type) {
+      document.getElementById('tx-type').value = type;
+      document.getElementById('modal-title').innerText = type === 'income' ? 'Catat Pemasukan Baru' : 'Catat Pengeluaran Baru';
+      document.getElementById('tx-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('tx-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('tx-modal').classList.add('hidden');
+      document.getElementById('tx-form').reset();
+    }
+
+    document.getElementById('tx-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newTx = {
+        id: Date.now(),
+        date: document.getElementById('tx-date').value,
+        category: document.getElementById('tx-category').value,
+        desc: document.getElementById('tx-desc').value,
+        amount: parseFloat(document.getElementById('tx-amount').value),
+        type: document.getElementById('tx-type').value
+      };
+
+      transactions.unshift(newTx);
+      updateDashboard();
+      closeModal();
+    });
+
+    // Initialize Page
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initCharts();
+      updateDashboard();
+      calculateBEP();
+    });
+  </script>
 </body>
 </html>
