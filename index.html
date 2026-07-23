@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cute Throne Notes - Planning & Calendar</title>
+  <title>Cute Throne - Starnest Style Planner & Journal</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Fredoka untuk tampilan imut & Playfair/Cinzel style -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Fredoka untuk kesan cute & playful -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -18,13 +18,12 @@
           },
           colors: {
             got: {
-              stark: '#94a3b8',
-              targaryen: '#f43f5e',
-              lannister: '#fbbf24',
               night: '#0f172a',
               card: '#1e293b',
-              pastelRed: '#fda4af',
-              pastelGold: '#fef08a'
+              gold: '#fbbf24',
+              red: '#f43f5e',
+              purple: '#c084fc',
+              blue: '#38bdf8'
             }
           }
         }
@@ -32,139 +31,181 @@
     }
   </script>
 </head>
-<body class="bg-got-night text-slate-100 min-h-screen font-sans p-4 md:p-8">
+<body class="bg-got-night text-slate-100 min-h-screen font-sans p-3 md:p-6 pb-20">
 
-  <div class="max-w-4xl mx-auto space-y-6">
+  <div class="max-w-3xl mx-auto space-y-6">
 
-    <!-- Header Lucu -->
-    <header class="text-center bg-got-card border-4 border-slate-700 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-      <div class="absolute -top-2 -left-2 text-3xl">🐉</div>
-      <div class="absolute -top-2 -right-2 text-3xl">🐺</div>
-      <h1 class="text-3xl md:text-4xl font-extrabold text-amber-300 tracking-wide flex items-center justify-center gap-2">
-        👑 Cute Throne Notes ⚔️
-      </h1>
-      <p class="text-xs md:text-sm text-slate-400 mt-1">"Winter is Coming...! ✨"</p>
+    <!-- Header Estetik GoT -->
+    <header class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 text-center shadow-xl relative overflow-hidden">
+      <div class="flex justify-between items-center mb-1">
+        <span class="text-2xl">🐉</span>
+        <h1 class="text-2xl md:text-3xl font-bold text-amber-300 tracking-wide">Starnest Throne Journal ✨</h1>
+        <span class="text-2xl">🐺</span>
+      </div>
+      <p class="text-xs text-slate-400">Atur Strategi Kerajaan, Mood Harian & Catatan Pribadimu!</p>
     </header>
 
-    <!-- Layout Utama: Kalender & Planning -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-
-      <!-- Kolom Kiri: Kalender Lucu GoT (5 Cols) -->
-      <div class="md:col-span-5 bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-4">
-        <div class="flex justify-between items-center pb-2 border-b border-slate-700">
-          <button onclick="changeMonth(-1)" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-lg font-bold">◄</button>
-          <h2 id="calendar-month" class="font-bold text-amber-300 text-sm md:text-base">Juli 2026</h2>
-          <button onclick="changeMonth(1)" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-lg font-bold">►</button>
-        </div>
-
-        <!-- Hari dalam Seminggu -->
-        <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-slate-400">
-          <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
-        </div>
-
-        <!-- Grid Tanggal -->
-        <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center text-xs">
-          <!-- Di-render oleh JavaScript -->
-        </div>
-
-        <div class="bg-slate-900/60 p-3 rounded-2xl border border-slate-800 text-center">
-          <p class="text-xs text-rose-300 font-medium" id="selected-date-text">📅 Klik tanggal untuk melihat/membuat plan!</p>
-        </div>
-      </div>
-
-      <!-- Kolom Kanan: Planning & Quest/To-Do (7 Cols) -->
-      <div class="md:col-span-7 space-y-6">
-
-        <!-- Form Input Plan Baru (Quest) -->
-        <div class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-3">
-          <h3 class="font-bold text-slate-200 text-sm flex items-center gap-2">
-            🛡️ Tambah Misi / Planning Baru
-          </h3>
-          <form id="form-plan" class="space-y-3">
-            <div class="flex gap-2">
-              <input type="text" id="input-plan" placeholder="Contoh: Taklukkan Tugas Sosiologi... 🔥" required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 text-white">
-              <select id="select-house" class="bg-slate-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white">
-                <option value="🐺 Stark">🐺 Stark</option>
-                <option value="🐉 Targaryen">🐉 Targaryen</option>
-                <option value="🦁 Lannister">🦁 Lannister</option>
-              </select>
-            </div>
-            <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs transition">
-              + Rebut Tahta (Simpan Plan)
-            </button>
-          </form>
-        </div>
-
-        <!-- Daftar Planning untuk Tanggal Terpilih -->
-        <div class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-3">
-          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-            <h3 class="font-bold text-amber-300 text-xs md:text-sm">⚔️ Daftar Misi Hari Ini</h3>
-            <span id="plan-count" class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full">0 Misi</span>
-          </div>
-
-          <div id="plan-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-            <!-- Items di-render via JS -->
-          </div>
-        </div>
-
-      </div>
-
+    <!-- Tab Navigation Ala Starnest -->
+    <div class="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl gap-1">
+      <button onclick="switchTab('planner')" id="tab-btn-planner" class="flex-1 py-2 rounded-xl text-xs font-bold transition bg-amber-400 text-slate-950">
+        📅 Planner & To-Do
+      </button>
+      <button onclick="switchTab('journal')" id="tab-btn-journal" class="flex-1 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+        📖 Journal & Mood
+      </button>
+      <button onclick="switchTab('habits')" id="tab-btn-habits" class="flex-1 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+        ⚔️ Habit Tracker
+      </button>
     </div>
 
-    <!-- Catatan Rahasia (Scrolls of Wisdom) -->
-    <div class="bg-got-card border-2 border-slate-700 rounded-3xl p-5 shadow-lg space-y-3">
-      <h3 class="font-bold text-rose-400 text-sm flex items-center gap-2">
-        📜 Gulungan Catatan Bebas (Quick Notes)
-      </h3>
-      <textarea id="quick-notes" rows="4" placeholder="Tulis ide strategi, draf novel, atau catatan penting lainnya di sini..." class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3 text-xs text-slate-200 focus:outline-none focus:border-rose-400"></textarea>
-      <div class="text-right">
-        <button onclick="saveNotes()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs transition">
-          💾 Simpan Gulungan
+    <!-- SECTION 1: PLANNER & TO-DO (TANGGAL & MISI) -->
+    <div id="section-planner" class="space-y-5">
+      <!-- Kalender Mini -->
+      <div class="bg-got-card border border-slate-700 rounded-3xl p-4 shadow-lg space-y-3">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-700">
+          <button onclick="changeMonth(-1)" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-xs font-bold">◄</button>
+          <h2 id="calendar-month-title" class="font-bold text-amber-300 text-sm">Juli 2026</h2>
+          <button onclick="changeMonth(1)" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-xs font-bold">►</button>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400">
+          <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+        </div>
+        <div id="calendar-days-grid" class="grid grid-cols-7 gap-1 text-center text-xs"></div>
+        <div class="text-center pt-2 border-t border-slate-800">
+          <span id="selected-date-badge" class="text-xs bg-slate-800 text-amber-300 px-3 py-1 rounded-full font-medium">📅 Tanggal: -</span>
+        </div>
+      </div>
+
+      <!-- Form Input Plan -->
+      <div class="bg-got-card border border-slate-700 rounded-3xl p-4 shadow-lg space-y-3">
+        <h3 class="font-bold text-xs text-slate-200">🛡️ Tambah Misi / Task Baru</h3>
+        <form id="form-task" class="flex gap-2">
+          <input type="text" id="task-input" placeholder="Misal: Latihan Pedang / Belajar Sosiologi... 🔥" required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+          <select id="task-house" class="bg-slate-900 border border-slate-700 rounded-xl px-2 text-xs text-white">
+            <option value="🐺 Stark">🐺 Stark</option>
+            <option value="🐉 Targaryen">🐉 Targaryen</option>
+            <option value="🦁 Lannister">🦁 Lannister</option>
+          </select>
+          <button type="submit" class="bg-amber-400 hover:bg-amber-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition">Tambah</button>
+        </form>
+      </div>
+
+      <!-- Daftar Task -->
+      <div class="bg-got-card border border-slate-700 rounded-3xl p-4 shadow-lg space-y-3">
+        <h3 class="font-bold text-xs text-amber-300">⚔️ Misi Hari Ini</h3>
+        <div id="task-list" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: JOURNAL & MOOD TRACKER -->
+    <div id="section-journal" class="space-y-5 hidden">
+      <div class="bg-got-card border border-slate-700 rounded-3xl p-5 shadow-lg space-y-4">
+        <h3 class="font-bold text-sm text-amber-300">👑 Mood Kerajaan Hari Ini</h3>
+        
+        <!-- Pilihan Mood Stiker -->
+        <div class="flex justify-between items-center bg-slate-900 p-3 rounded-2xl border border-slate-800">
+          <button onclick="setMood('👑 Raja Perkasa')" class="mood-btn p-2 rounded-xl text-2xl hover:bg-slate-800 transition" title="Senang / Perkasa">👑</button>
+          <button onclick="setMood('🔥 Targaryen On Fire')" class="mood-btn p-2 rounded-xl text-2xl hover:bg-slate-800 transition" title="Semangat / Ambisius">🔥</button>
+          <button onclick="setMood('🐺 Winter Chill')" class="mood-btn p-2 rounded-xl text-2xl hover:bg-slate-800 transition" title="Santai / Biasa">🐺</button>
+          <button onclick="setMood('🛡️ Kelelahan Perang')" class="mood-btn p-2 rounded-xl text-2xl hover:bg-slate-800 transition" title="Lelah / Cemas">🛡️</button>
+          <button onclick="setMood('❄️ Serangan White Walker')" class="mood-btn p-2 rounded-xl text-2xl hover:bg-slate-800 transition" title="Sedih / Bad Mood">❄️</button>
+        </div>
+        <p id="current-mood-text" class="text-xs text-center text-rose-300 font-medium">Mood dipilih: Belum diset</p>
+
+        <!-- Diari / Journal Input -->
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">📜 Diari & Catatan Cerita Hari Ini</label>
+          <textarea id="journal-input" rows="5" placeholder="Tuliskan kisah perjalanan, pikiran, atau strategi bisnismu di sini..." class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-400"></textarea>
+        </div>
+
+        <button onclick="saveJournal()" class="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs transition">
+          💾 Simpan Diari & Mood
         </button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: HABIT TRACKER -->
+    <div id="section-habits" class="space-y-5 hidden">
+      <div class="bg-got-card border border-slate-700 rounded-3xl p-5 shadow-lg space-y-4">
+        <h3 class="font-bold text-sm text-amber-300">⚔️ Kebiasaan / Habit Ksatria</h3>
+        <p class="text-xs text-slate-400">Bangun rutinitas harian untuk memperkuat kerajaanmu!</p>
+
+        <form id="form-habit" class="flex gap-2">
+          <input type="text" id="habit-input" placeholder="Contoh: Olahraga / Gym, Membaca Buku..." required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+          <button type="submit" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Tambah Habit</button>
+        </form>
+
+        <div id="habit-list" class="space-y-2"></div>
       </div>
     </div>
 
   </div>
 
   <script>
-    // State Aplikasi
+    // App State
     let currentDate = new Date();
     let selectedDateStr = new Date().toISOString().split('T')[0];
-    let plans = JSON.parse(localStorage.getItem('got_plans')) || {};
-    let notes = localStorage.getItem('got_quick_notes') || '';
 
-    const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    let tasks = JSON.parse(localStorage.getItem('starnest_tasks')) || {};
+    let journals = JSON.parse(localStorage.getItem('starnest_journals')) || {};
+    let habits = JSON.parse(localStorage.getItem('starnest_habits')) || [];
 
-    // Render Kalender
+    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    // Navigation Tabs
+    function switchTab(tab) {
+      document.getElementById('section-planner').classList.add('hidden');
+      document.getElementById('section-journal').classList.add('hidden');
+      document.getElementById('section-habits').classList.add('hidden');
+
+      document.getElementById('tab-btn-planner').className = "flex-1 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white";
+      document.getElementById('tab-btn-journal').className = "flex-1 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white";
+      document.getElementById('tab-btn-habits').className = "flex-1 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white";
+
+      if (tab === 'planner') {
+        document.getElementById('section-planner').classList.remove('hidden');
+        document.getElementById('tab-btn-planner').className = "flex-1 py-2 rounded-xl text-xs font-bold transition bg-amber-400 text-slate-950";
+      } else if (tab === 'journal') {
+        document.getElementById('section-journal').classList.remove('hidden');
+        document.getElementById('tab-btn-journal').className = "flex-1 py-2 rounded-xl text-xs font-bold transition bg-rose-500 text-white";
+        loadJournalForSelectedDate();
+      } else if (tab === 'habits') {
+        document.getElementById('section-habits').classList.remove('hidden');
+        document.getElementById('tab-btn-habits').className = "flex-1 py-2 rounded-xl text-xs font-bold transition bg-purple-500 text-white";
+        renderHabits();
+      }
+    }
+
+    // Calendar
     function renderCalendar() {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
 
-      document.getElementById('calendar-month').innerText = `${namaBulan[month]} ${year}`;
+      document.getElementById('calendar-month-title').innerText = `${monthNames[month]} ${year}`;
 
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      const daysContainer = document.getElementById('calendar-days');
-      daysContainer.innerHTML = '';
+      const grid = document.getElementById('calendar-days-grid');
+      grid.innerHTML = '';
 
-      // Blank slots
-      for (let i = 0; i < firstDay; i++) {
-        daysContainer.innerHTML += `<div></div>`;
-      }
+      for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
 
-      // Day slots
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const isSelected = dateStr === selectedDateStr;
-        const hasPlan = plans[dateStr] && plans[dateStr].length > 0;
+        const hasTask = tasks[dateStr] && tasks[dateStr].length > 0;
+        const hasJournal = journals[dateStr];
 
-        let bgClass = isSelected ? 'bg-amber-400 text-slate-950 font-bold' : 'hover:bg-slate-800 text-slate-300';
-        
-        daysContainer.innerHTML += `
-          <button onclick="selectDate('${dateStr}')" class="p-2 rounded-xl text-xs relative ${bgClass} transition">
+        let bg = isSelected ? 'bg-amber-400 text-slate-950 font-bold' : 'hover:bg-slate-800 text-slate-300';
+
+        grid.innerHTML += `
+          <button onclick="selectDate('${dateStr}')" class="p-2 rounded-xl text-xs relative ${bg} transition">
             ${day}
-            ${hasPlan && !isSelected ? '<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-rose-400 rounded-full"></span>' : ''}
+            <div class="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5">
+              ${hasTask && !isSelected ? '<span class="w-1 h-1 bg-rose-400 rounded-full"></span>' : ''}
+              ${hasJournal && !isSelected ? '<span class="w-1 h-1 bg-purple-400 rounded-full"></span>' : ''}
+            </div>
           </button>
         `;
       }
@@ -177,78 +218,140 @@
 
     function selectDate(dateStr) {
       selectedDateStr = dateStr;
-      document.getElementById('selected-date-text').innerText = `📅 Tanggal Terpilih: ${dateStr}`;
+      document.getElementById('selected-date-badge').innerText = `📅 Tanggal: ${dateStr}`;
       renderCalendar();
-      renderPlans();
+      renderTasks();
+      loadJournalForSelectedDate();
     }
 
-    // Render Daftar Plan
-    function renderPlans() {
-      const planList = document.getElementById('plan-list');
-      const dayPlans = plans[selectedDateStr] || [];
-      document.getElementById('plan-count').innerText = `${dayPlans.length} Misi`;
+    // Task / Planner
+    function renderTasks() {
+      const list = document.getElementById('task-list');
+      const dayTasks = tasks[selectedDateStr] || [];
+      list.innerHTML = '';
 
-      planList.innerHTML = '';
-
-      if (dayPlans.length === 0) {
-        planList.innerHTML = `<p class="text-center text-xs text-slate-500 py-4 italic">Belum ada misi untuk tanggal ini 🛡️</p>`;
+      if (dayTasks.length === 0) {
+        list.innerHTML = `<p class="text-center text-xs text-slate-500 py-3 italic">Tidak ada misi untuk tanggal ini 🛡️</p>`;
         return;
       }
 
-      dayPlans.forEach((plan, index) => {
-        planList.innerHTML += `
+      dayTasks.forEach((task, idx) => {
+        list.innerHTML += `
           <div class="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs">
             <div class="flex items-center gap-2">
-              <input type="checkbox" ${plan.done ? 'checked' : ''} onchange="togglePlan(${index})" class="accent-amber-400 w-4 h-4 rounded cursor-pointer">
-              <span class="${plan.done ? 'line-through text-slate-500' : 'text-slate-200'} font-medium">
-                <span class="text-[10px] opacity-75 mr-1">${plan.house}</span> ${plan.text}
+              <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${idx})" class="accent-amber-400 w-4 h-4 rounded cursor-pointer">
+              <span class="${task.done ? 'line-through text-slate-500' : 'text-slate-200'} font-medium">
+                <span class="text-[10px] text-amber-400 mr-1">${task.house}</span> ${task.text}
               </span>
             </div>
-            <button onclick="deletePlan(${index})" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
+            <button onclick="deleteTask(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
           </div>
         `;
       });
     }
 
-    // Form Event Listener
-    document.getElementById('form-plan').addEventListener('submit', function(e) {
+    document.getElementById('form-task').addEventListener('submit', function(e) {
       e.preventDefault();
-      const text = document.getElementById('input-plan').value;
-      const house = document.getElementById('select-house').value;
+      const text = document.getElementById('task-input').value;
+      const house = document.getElementById('task-house').value;
 
-      if (!plans[selectedDateStr]) plans[selectedDateStr] = [];
-      plans[selectedDateStr].push({ text, house, done: false });
+      if (!tasks[selectedDateStr]) tasks[selectedDateStr] = [];
+      tasks[selectedDateStr].push({ text, house, done: false });
 
-      localStorage.setItem('got_plans', JSON.stringify(plans));
-      document.getElementById('input-plan').value = '';
-      
+      localStorage.setItem('starnest_tasks', JSON.stringify(tasks));
+      document.getElementById('task-input').value = '';
       renderCalendar();
-      renderPlans();
+      renderTasks();
     });
 
-    function togglePlan(index) {
-      plans[selectedDateStr][index].done = !plans[selectedDateStr][index].done;
-      localStorage.setItem('got_plans', JSON.stringify(plans));
-      renderPlans();
+    function toggleTask(idx) {
+      tasks[selectedDateStr][idx].done = !tasks[selectedDateStr][idx].done;
+      localStorage.setItem('starnest_tasks', JSON.stringify(tasks));
+      renderTasks();
     }
 
-    function deletePlan(index) {
-      plans[selectedDateStr].splice(index, 1);
-      localStorage.setItem('got_plans', JSON.stringify(plans));
+    function deleteTask(idx) {
+      tasks[selectedDateStr].splice(idx, 1);
+      localStorage.setItem('starnest_tasks', JSON.stringify(tasks));
       renderCalendar();
-      renderPlans();
+      renderTasks();
     }
 
-    // Quick Notes
-    function saveNotes() {
-      const val = document.getElementById('quick-notes').value;
-      localStorage.setItem('got_quick_notes', val);
-      alert('📜 Gulungan Catatan Berhasil Disimpan!');
+    // Journal & Mood
+    let selectedMood = '';
+    function setMood(mood) {
+      selectedMood = mood;
+      document.getElementById('current-mood-text').innerText = `Mood dipilih: ${mood}`;
+    }
+
+    function saveJournal() {
+      const text = document.getElementById('journal-input').value;
+      journals[selectedDateStr] = { mood: selectedMood, text: text };
+      localStorage.setItem('starnest_journals', JSON.stringify(journals));
+      alert('📖 Diari & Mood Berhasil Disimpan!');
+      renderCalendar();
+    }
+
+    function loadJournalForSelectedDate() {
+      const data = journals[selectedDateStr];
+      if (data) {
+        selectedMood = data.mood || '';
+        document.getElementById('current-mood-text').innerText = selectedMood ? `Mood dipilih: ${selectedMood}` : 'Mood dipilih: Belum diset';
+        document.getElementById('journal-input').value = data.text || '';
+      } else {
+        selectedMood = '';
+        document.getElementById('current-mood-text').innerText = 'Mood dipilih: Belum diset';
+        document.getElementById('journal-input').value = '';
+      }
+    }
+
+    // Habit Tracker
+    function renderHabits() {
+      const list = document.getElementById('habit-list');
+      list.innerHTML = '';
+
+      if (habits.length === 0) {
+        list.innerHTML = `<p class="text-center text-xs text-slate-500 py-3 italic">Belum ada habit yang ditambahkan.</p>`;
+        return;
+      }
+
+      habits.forEach((habit, idx) => {
+        list.innerHTML += `
+          <div class="flex items-center justify-between p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs">
+            <span class="font-medium text-slate-200">⚔️ ${habit.title}</span>
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] text-purple-400 font-bold">${habit.streak || 0} Hari Streak 🔥</span>
+              <button onclick="checkHabit(${idx})" class="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-lg hover:bg-purple-500/30 font-bold">+1 Hari</button>
+              <button onclick="deleteHabit(${idx})" class="text-rose-400 font-bold px-1">✕</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('form-habit').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const title = document.getElementById('habit-input').value;
+      habits.push({ title, streak: 0 });
+      localStorage.setItem('starnest_habits', JSON.stringify(habits));
+      document.getElementById('habit-input').value = '';
+      renderHabits();
+    });
+
+    function checkHabit(idx) {
+      habits[idx].streak = (habits[idx].streak || 0) + 1;
+      localStorage.setItem('starnest_habits', JSON.stringify(habits));
+      renderHabits();
+    }
+
+    function deleteHabit(idx) {
+      habits.splice(idx, 1);
+      localStorage.setItem('starnest_habits', JSON.stringify(habits));
+      renderHabits();
     }
 
     // Init App
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('quick-notes').value = notes;
       selectDate(selectedDateStr);
     });
   </script>
